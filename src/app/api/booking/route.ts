@@ -43,7 +43,7 @@ export async function POST(req: NextRequest) {
   const newSlots = currentSlots.filter((t) => t !== body.time);
   const upd = await supabase.from("availability").update({ slots: newSlots }).eq("date", slotKey);
   if (upd.error) return NextResponse.json({ error: upd.error.message }, { status: 500 });
-  // Send email confirmation
+  // Send email confirmation (non-blocking for production robustness)
   try {
     await sendBookingEmail({
       name: body.name,
@@ -54,9 +54,8 @@ export async function POST(req: NextRequest) {
       time: body.time,
       notes: body.notes,
     });
-    console.log("Email confirmation sent successfully");
-  } catch (e) {
-    console.warn("Email send failed - booking still confirmed", e);
+  } catch (_) {
+    // Intentionally swallow email errors in production so booking still succeeds
   }
 
   return NextResponse.json({ ok: true });

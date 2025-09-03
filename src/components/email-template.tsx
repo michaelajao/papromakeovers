@@ -179,7 +179,7 @@ export function BookingEmailTemplate({
           fontSize: '14px', 
           margin: '0 0 15px 0' 
         }}>
-          ✉️ papromakeoversstudios@gmail.com
+          ✉️ papromakeoversstudio@gmail.com
         </p>
         <p style={{ 
           color: '#999', 

@@ -6,7 +6,7 @@ export default function Footer() {
           <h3 className="text-[#d4b896] font-semibold mb-2">Contact Us</h3>
           <p>📍 Coventry, United Kingdom</p>
           <p>📞 +447368590564</p>
-          <p>✉️ papromakeoversstudios@gmail.com</p>
+          <p>✉️ papromakeoversstudio@gmail.com</p>
           <div className="flex gap-3 mt-4">
             <a
               className="w-10 h-10 rounded-full grid place-items-center bg-[#d4b896] hover:bg-[#b49b82] text-white transition-colors"

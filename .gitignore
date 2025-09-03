@@ -39,3 +39,26 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+.mcp.json
+
+.cursor
+
+.vscode
+
+.claude
+
+.cursorignore
+
+.cursorrules
+
+# playwright
+/playwright-report
+
+# figma
+/figma-report
+
+# cursor
+/cursor-report
+
+/.playwright-mcp

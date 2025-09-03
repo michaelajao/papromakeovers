@@ -15,6 +15,8 @@ export default function AdminPage() {
   const [passcode, setPasscode] = useState("");
   const [editingDate, setEditingDate] = useState<string | null>(null);
   const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
+  type AdminBooking = { id: number; name: string; service: string; date: string; time: string; status: string };
+  const [bookings, setBookings] = useState<AdminBooking[]>([]);
 
   useEffect(() => {
     const monthStr = currentMonth.toISOString().slice(0, 7);
@@ -30,8 +32,20 @@ export default function AdminPage() {
         setSlotsByDate(data.slotsByDate);
         setHasUnsavedChanges(false);
       }
+      // Load bookings for the month (admin only)
+      try {
+        const br = await fetch(`/api/bookings?month=${month}`, { headers: { "x-admin-passcode": passcode || "" } });
+        if (br.ok) {
+          const bj = (await br.json()) as { bookings: AdminBooking[] };
+          setBookings(bj.bookings);
+        } else {
+          setBookings([]);
+        }
+      } catch {
+        setBookings([]);
+      }
     })();
-  }, [month]);
+  }, [month, passcode]);
 
   function handleDateSelect(dateStr: string) {
     const isCurrentlySelected = dates.includes(dateStr);
@@ -206,6 +220,47 @@ export default function AdminPage() {
               </div>
             )}
 
+            {/* Bookings Management */}
+            <div className="bg-white rounded-lg border border-[#f5f2ed] p-4">
+              <h3 className="font-semibold text-[#4a4037] mb-3">Bookings (this month)</h3>
+              {bookings.length === 0 ? (
+                <p className="text-sm text-[#6b5d4f]">No bookings yet.</p>
+              ) : (
+                <div className="space-y-2 max-h-64 overflow-y-auto">
+                  {bookings.map((b) => (
+                    <div key={b.id} className="flex items-center justify-between text-sm">
+                      <div className="text-[#4a4037]">
+                        <span className="font-medium">{b.name}</span> · {b.service} · {b.date} {b.time}
+                        <span className={`ml-2 px-2 py-0.5 rounded text-xs ${b.status === 'confirmed' ? 'bg-emerald-50 text-emerald-700' : 'bg-amber-50 text-amber-700'}`}>{b.status}</span>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <button
+                          onClick={async () => {
+                            await fetch('/api/bookings', { method: 'PATCH', headers: { 'Content-Type': 'application/json', 'x-admin-passcode': passcode || '' }, body: JSON.stringify({ id: b.id, action: 'accept' }) });
+                            // reload
+                            const br = await fetch(`/api/bookings?month=${month}`, { headers: { 'x-admin-passcode': passcode || '' } });
+                            if (br.ok) { const bj = await br.json(); setBookings(bj.bookings); }
+                          }}
+                          className="px-2 py-1 text-xs bg-emerald-50 hover:bg-emerald-100 text-emerald-700 rounded"
+                        >
+                          Accept & Block Slot
+                        </button>
+                        <button
+                          onClick={async () => {
+                            await fetch('/api/bookings', { method: 'PATCH', headers: { 'Content-Type': 'application/json', 'x-admin-passcode': passcode || '' }, body: JSON.stringify({ id: b.id, action: 'cancel' }) });
+                            const br = await fetch(`/api/bookings?month=${month}`, { headers: { 'x-admin-passcode': passcode || '' } });
+                            if (br.ok) { const bj = await br.json(); setBookings(bj.bookings); }
+                          }}
+                          className="px-2 py-1 text-xs bg-red-50 hover:bg-red-100 text-red-700 rounded"
+                        >
+                          Cancel & Reopen Slot
+                        </button>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
             {/* Quick Actions */}
             <div className="bg-white rounded-lg border border-[#f5f2ed] p-4">
               <h3 className="font-semibold text-[#4a4037] mb-3">Quick Actions</h3>

@@ -22,8 +22,8 @@ export async function sendBookingEmail(payload: {
     const { data, error } = await resend.emails.send({
       from: 'Papromakeovers <bookings@papromakeovers.com>',
       to: [payload.email],
-      bcc: ['papromakeoversstudios@gmail.com'],
-      replyTo: 'papromakeoversstudios@gmail.com',
+      bcc: ['papromakeoversstudio@gmail.com'],
+      replyTo: 'papromakeoversstudio@gmail.com',
       subject: `Booking Confirmation - ${payload.service}`,
       react: BookingEmailTemplate({
         name: payload.name,
