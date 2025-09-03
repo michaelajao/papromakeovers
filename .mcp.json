@@ -1,0 +1,32 @@
+{
+    "mcpServers": {
+      "supabase": {
+        "command": "npx",
+        "args": [
+          "-y",
+          "@supabase/mcp-server-supabase@latest",
+          "--read-only",
+          "--project-ref=eymlpuygdeqeyoynfjxg"
+        ],
+        "env": {
+          "SUPABASE_ACCESS_TOKEN": "YOUR_SUPABASE_PERSONAL_ACCESS_TOKEN"
+        }
+      },
+      "playwright": {
+        "command": "npx",
+        "args": [
+          "@playwright/mcp@latest"
+        ]
+      },
+      "figma-dev-mode": {
+        "command": "npx",
+        "args": [
+          "-y",
+          "@figma/mcp-server-figma@latest"
+        ],
+        "env": {
+          "FIGMA_PERSONAL_ACCESS_TOKEN": "YOUR_FIGMA_PERSONAL_ACCESS_TOKEN"
+        }
+      }
+    }
+  }
