@@ -1,7 +1,7 @@
 "use client";
 
-import { eachDayOfInterval, endOfMonth, format, getDay, isSameDay, startOfMonth, addMonths, subMonths, isToday, isBefore } from "date-fns";
-import { useMemo, useState } from "react";
+import { eachDayOfInterval, endOfMonth, format, getDay, startOfMonth, addMonths, subMonths, isToday, isBefore } from "date-fns";
+import { useMemo } from "react";
 
 type AdminCalendarProps = {
   month: Date;
@@ -55,7 +55,6 @@ export default function AdminCalendar({
 
   const getDateClasses = (date: Date) => {
     const status = getDateStatus(date);
-    const isPastDate = isBefore(date, today) && !isToday(date);
     const todayDate = isToday(date);
 
     const baseClasses = "w-10 h-10 flex items-center justify-center rounded-lg transition-all duration-200 relative text-sm font-semibold shadow-sm hover:shadow-md focus:outline-none focus:ring-2 focus:ring-offset-1";

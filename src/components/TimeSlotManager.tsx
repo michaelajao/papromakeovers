@@ -59,14 +59,14 @@ export default function TimeSlotManager({ date, initialSlots = [], onChange, onC
       });
       setMode("range");
     }
-  }, [date, initialSlots]);
+  }, [date, initialSlots, businessHours.start, businessHours.end]);
 
   const generateSlotsFromRange = (start: string, end: string, duration: number): string[] => {
     const slots = [];
     const startTime = new Date(`1970-01-01T${start}:00`);
     const endTime = new Date(`1970-01-01T${end}:00`);
     
-    let currentTime = new Date(startTime);
+    const currentTime = new Date(startTime);
     
     while (currentTime < endTime) {
       const timeStr = currentTime.toTimeString().slice(0, 5);
@@ -241,7 +241,7 @@ export default function TimeSlotManager({ date, initialSlots = [], onChange, onC
                 
                 {customSlots.length === 0 && (
                   <p className="text-[#6b5d4f] text-center py-4">
-                    No custom slots yet. Click "Add Slot" to get started.
+                    No custom slots yet. Click &quot;Add Slot&quot; to get started.
                   </p>
                 )}
               </div>
