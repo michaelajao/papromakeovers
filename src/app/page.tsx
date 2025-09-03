@@ -93,25 +93,25 @@ export default async function Home() {
             <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
               <div className="group">
                 <ServiceCard
-                  icon="🏢"
                   title="Studio Makeup"
                   value="studio-makeup"
+                  category="Signature Service"
                   description="1 hour · Enjoy a personalised makeover in our studio, created to suit your unique features and preferences. Ideal if you'd love to visit our space for a flawless look for any occasion."
                 />
               </div>
               <div className="group">
                 <ServiceCard
-                  icon="📸"
                   title="Photoshoot Glam"
                   value="photoshoot-glam"
+                  category="Signature Service"
                   description="1 hour 30 minutes · A detailed, camera-ready look that enhances your natural beauty under studio lights. Great for pre-wedding shoots, birthdays, headshots or brand photography."
                 />
               </div>
               <div className="group">
                 <ServiceCard
-                  icon="🎓"
                   title="Graduation & Prom Glam"
                   value="prom-glam"
+                  category="Signature Service"
                   description="1 hour · A youthful, radiant and stylish look for graduation ceremonies and prom night - soft glam or bold drama to match your vibe and outfit."
                 />
               </div>
@@ -125,25 +125,25 @@ export default async function Home() {
             <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
               <div className="group">
                 <ServiceCard
-                  icon="🎉"
                   title="Party Guest Makeup"
                   value="party-guest-makeup"
+                  category="Group Service"
                   description="Perfect for weddings, birthdays and celebrations. Ideal for mother of the bride/groom and siblings. This is a group booking (minimum of 3 people)."
                 />
               </div>
               <div className="group">
                 <ServiceCard
-                  icon="👯"
                   title="Bridesmaids Bookings"
                   value="bridesmaids-bookings"
+                  category="Group Service"
                   description="Cohesive, elegant looks for the bridal party. Long-lasting and picture-perfect for a full day of celebration. Group booking (minimum of 3 people)."
                 />
               </div>
               <div className="group">
                 <ServiceCard
-                  icon="🚗"
                   title="Travel Makeup Service"
                   value="travel-makeup"
+                  category="Mobile Service"
                   description="1 hour 30 minutes · Bringing the glam to your home, hotel or venue. Note: additional travel fees apply based on location."
                 />
               </div>
@@ -164,33 +164,33 @@ export default async function Home() {
               <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4 mb-8">
                 <div className="group transform hover:scale-105 transition-all duration-300">
                   <ServiceCard 
-                    icon="💍" 
                     title="Civil Wedding" 
                     value="bridal-civil"
+                    category="Bridal Service"
                     description="Elegant and refined makeup for your intimate civil ceremony. Timeless beauty that photographs beautifully."
                   />
                 </div>
                 <div className="group transform hover:scale-105 transition-all duration-300">
                   <ServiceCard 
-                    icon="🏛️" 
                     title="Traditional Wedding" 
                     value="bridal-traditional"
+                    category="Bridal Service"
                     description="Rich, cultural makeup that honours your heritage while enhancing your natural beauty for traditional ceremonies."
                   />
         </div>
                 <div className="group transform hover:scale-105 transition-all duration-300">
                   <ServiceCard 
-                    icon="👰" 
                     title="White Wedding" 
                     value="bridal-white"
+                    category="Bridal Service"
                     description="Classic bridal glam with long-lasting coverage perfect for your white wedding celebration and photos."
                   />
                 </div>
                 <div className="group transform hover:scale-105 transition-all duration-300">
                   <ServiceCard 
-                    icon="💫" 
                     title="Complete Bridal Package" 
                     value="bridal-combination"
+                    category="Premium Package"
                     description="The ultimate bridal experience combining multiple ceremonies with coordinated looks throughout your celebration."
                   />
                 </div>
@@ -211,9 +211,9 @@ export default async function Home() {
             <div className="max-w-md mx-auto">
               <div className="group">
                 <ServiceCard
-                  icon="🧑‍🎓"
                   title="DIY Makeup Masterclass"
                   value="diy-makeup-class"
+                  category="Education"
                   description="3 hours · A personalised lesson covering everyday basics or glam techniques - tailored to your level so you feel confident doing your own makeup."
                 />
               </div>
