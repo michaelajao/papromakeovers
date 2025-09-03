@@ -69,29 +69,21 @@ export default async function Home() {
         </div>
       </section>
 
-      <section id="services" className="py-24 bg-gradient-to-br from-[#faf8f5] via-[#f5f2ed] to-[#ede7dd] relative overflow-hidden">
-        {/* Background decoration */}
-        <div className="absolute inset-0 opacity-5">
-          <div className="absolute top-20 left-10 w-32 h-32 bg-[#d4b896] rounded-full blur-3xl"></div>
-          <div className="absolute bottom-20 right-10 w-40 h-40 bg-[#b49b82] rounded-full blur-3xl"></div>
-          <div className="absolute top-1/2 left-1/3 w-24 h-24 bg-[#c4a882] rounded-full blur-2xl"></div>
-        </div>
-        
-        <div className="max-w-[1200px] mx-auto px-5 relative">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl sm:text-5xl font-bold text-[#4a4037] mb-4 tracking-tight">Our Services</h2>
-            <div className="w-24 h-1 bg-gradient-to-r from-[#d4b896] to-[#b49b82] mx-auto mb-6"></div>
-            <p className="text-lg text-[#6b5b4a] max-w-2xl mx-auto leading-relaxed">
-              Professional makeup artistry tailored to your unique style and occasion. From everyday elegance to special celebrations.
+      <section id="services" className="py-24 bg-white">
+        <div className="max-w-[1200px] mx-auto px-5">
+          <div className="text-center mb-20">
+            <h2 className="text-4xl sm:text-5xl font-light text-[#4a4037] mb-6 tracking-wide">Our Services</h2>
+            <div className="w-12 h-px bg-[#d4b896] mx-auto mb-8"></div>
+            <p className="text-lg text-[#6b5b4a] max-w-xl mx-auto font-light leading-relaxed">
+              Professional makeup artistry tailored to your unique style and occasion.
             </p>
           </div>
 
           {/* Main Services */}
           <div className="mb-20">
-            <h3 className="text-2xl font-bold text-[#4a4037] mb-3 text-center">✨ Signature Services</h3>
-            <p className="text-[#6b5b4a] text-center mb-10 max-w-3xl mx-auto">Our most popular makeup services designed to enhance your natural beauty</p>
-            <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
-              <div className="group">
+            <h3 className="text-xl font-light text-[#4a4037] mb-12 text-center tracking-wide">Signature Services</h3>
+            <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+              <div className="transform hover:scale-105 transition-all duration-300">
                 <ServiceCard
                   title="Studio Makeup"
                   value="studio-makeup"
@@ -99,7 +91,7 @@ export default async function Home() {
                   description="1 hour · Enjoy a personalised makeover in our studio, created to suit your unique features and preferences. Ideal if you'd love to visit our space for a flawless look for any occasion."
                 />
               </div>
-              <div className="group">
+              <div className="transform hover:scale-105 transition-all duration-300">
                 <ServiceCard
                   title="Photoshoot Glam"
                   value="photoshoot-glam"
@@ -107,7 +99,7 @@ export default async function Home() {
                   description="1 hour 30 minutes · A detailed, camera-ready look that enhances your natural beauty under studio lights. Great for pre-wedding shoots, birthdays, headshots or brand photography."
                 />
               </div>
-              <div className="group">
+              <div className="transform hover:scale-105 transition-all duration-300">
                 <ServiceCard
                   title="Graduation & Prom Glam"
                   value="prom-glam"
@@ -120,10 +112,9 @@ export default async function Home() {
 
           {/* Party & Group Services */}
           <div className="mb-20">
-            <h3 className="text-2xl font-bold text-[#4a4037] mb-3 text-center">🎉 Party & Group Services</h3>
-            <p className="text-[#6b5b4a] text-center mb-10 max-w-3xl mx-auto">Perfect for celebrations and group bookings with special rates</p>
-            <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
-              <div className="group">
+            <h3 className="text-xl font-light text-[#4a4037] mb-12 text-center tracking-wide">Group Services</h3>
+            <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+              <div className="transform hover:scale-105 transition-all duration-300">
                 <ServiceCard
                   title="Party Guest Makeup"
                   value="party-guest-makeup"
@@ -131,7 +122,7 @@ export default async function Home() {
                   description="Perfect for weddings, birthdays and celebrations. Ideal for mother of the bride/groom and siblings. This is a group booking (minimum of 3 people)."
                 />
               </div>
-              <div className="group">
+              <div className="transform hover:scale-105 transition-all duration-300">
                 <ServiceCard
                   title="Bridesmaids Bookings"
                   value="bridesmaids-bookings"
@@ -139,7 +130,7 @@ export default async function Home() {
                   description="Cohesive, elegant looks for the bridal party. Long-lasting and picture-perfect for a full day of celebration. Group booking (minimum of 3 people)."
                 />
               </div>
-              <div className="group">
+              <div className="transform hover:scale-105 transition-all duration-300">
                 <ServiceCard
                   title="Travel Makeup Service"
                   value="travel-makeup"
@@ -150,18 +141,18 @@ export default async function Home() {
             </div>
           </div>
 
-          {/* Bridal Services - Enhanced */}
-          <div className="mb-16">
-            <div className="bg-gradient-to-r from-[#f5f2ed] to-[#ede7dd] rounded-3xl p-10 shadow-xl border border-[#e5ddd1]">
-              <div className="text-center mb-12">
-                <h3 className="text-3xl font-bold text-[#4a4037] mb-4 tracking-tight">💒 Bridal Services</h3>
-                <div className="w-16 h-1 bg-gradient-to-r from-[#d4b896] to-[#b49b82] mx-auto mb-6"></div>
-                <p className="text-lg text-[#6b5b4a] max-w-2xl mx-auto leading-relaxed">
-                  Your wedding day deserves perfection. Our bridal makeup services ensure you look and feel absolutely radiant on your special day.
+          {/* Bridal Services */}
+          <div className="mb-20">
+            <div className="border-t border-[#f5f2ed] pt-16">
+              <div className="text-center mb-16">
+                <h3 className="text-xl font-light text-[#4a4037] mb-4 tracking-wide">Bridal Services</h3>
+                <div className="w-12 h-px bg-[#d4b896] mx-auto mb-8"></div>
+                <p className="text-base text-[#6b5b4a] max-w-lg mx-auto font-light leading-relaxed">
+                  Your wedding day deserves perfection. Timeless beauty for your special day.
                 </p>
               </div>
               
-              <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4 mb-8">
+              <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
                 <div className="group transform hover:scale-105 transition-all duration-300">
                   <ServiceCard 
                     title="Civil Wedding" 
@@ -196,20 +187,17 @@ export default async function Home() {
                 </div>
               </div>
 
-              <div className="text-center">
-                <div className="inline-flex items-center gap-2 bg-white/50 backdrop-blur-sm rounded-full px-6 py-3 border border-[#d4b896]/30">
-                  <span className="text-[#4a4037] font-medium">💝 Special bridal packages available</span>
-                </div>
-              </div>
             </div>
           </div>
 
           {/* Learning & Specialty */}
-          <div className="text-center">
-            <h3 className="text-2xl font-bold text-[#4a4037] mb-3">🧑‍🎓 Learn & Master</h3>
-            <p className="text-[#6b5b4a] mb-10 max-w-2xl mx-auto">Master the art of makeup with our personalised teaching sessions</p>
+          <div className="border-t border-[#f5f2ed] pt-16">
+            <div className="text-center mb-12">
+              <h3 className="text-xl font-light text-[#4a4037] mb-4 tracking-wide">Education</h3>
+              <div className="w-12 h-px bg-[#d4b896] mx-auto"></div>
+            </div>
             <div className="max-w-md mx-auto">
-              <div className="group">
+              <div className="transform hover:scale-105 transition-all duration-300">
                 <ServiceCard
                   title="DIY Makeup Masterclass"
                   value="diy-makeup-class"
