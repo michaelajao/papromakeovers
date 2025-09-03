@@ -21,6 +21,12 @@ export default function BookingForm() {
   const [submitting, setSubmitting] = useState(false);
 
   useEffect(() => {
+    // Preselect service from URL query (?service=slug)
+    if (typeof window !== 'undefined') {
+      const url = new URL(window.location.href);
+      const s = url.searchParams.get('service');
+      if (s) setService(s);
+    }
     const controller = new AbortController();
     async function loadAvailability() {
       try {
@@ -79,10 +85,21 @@ export default function BookingForm() {
         <label className="block font-semibold mb-2">Select Service</label>
         <select value={service} onChange={(e) => setService(e.target.value)} className="w-full px-3 py-2 rounded bg-white text-[#4a4037] border border-[#f5f2ed] focus:border-[#d4b896] focus:outline-none" required>
           <option value="">Choose a service...</option>
-          <option value="bridal">Bridal Makeup - From £150</option>
-          <option value="events">Special Events - From £80</option>
-          <option value="photoshoot">Photoshoot Makeup - From £100</option>
-          <option value="lessons">Makeup Lessons - From £120</option>
+          <optgroup label="Services">
+            <option value="studio-makeup">Studio makeup</option>
+            <option value="party-guest-makeup">Party guest makeup</option>
+            <option value="photoshoot-glam">Photoshoot glam</option>
+            <option value="bridesmaids-bookings">Bridesmaids bookings</option>
+            <option value="prom-glam">Prom glam</option>
+            <option value="travel-makeup">Travel to client location makeup service</option>
+            <option value="diy-makeup-class">DIY one on one makeup class</option>
+          </optgroup>
+          <optgroup label="Bridal services">
+            <option value="bridal-civil">Civil wedding</option>
+            <option value="bridal-traditional">Traditional wedding</option>
+            <option value="bridal-white">White wedding</option>
+            <option value="bridal-combination">Combination of all</option>
+          </optgroup>
         </select>
       </div>
 

@@ -8,9 +8,7 @@ export default function Footer() {
           <p>📞 +44 7XXX XXX XXX</p>
           <p>✉️ hello@papromakeovers.co.uk</p>
           <div className="flex gap-3 mt-4">
-            <a className="w-10 h-10 rounded-full grid place-items-center bg-[#d4b896] hover:bg-[#b49b82] transition-colors" href="#">📘</a>
-            <a className="w-10 h-10 rounded-full grid place-items-center bg-[#d4b896] hover:bg-[#b49b82] transition-colors" href="#">📷</a>
-            <a className="w-10 h-10 rounded-full grid place-items-center bg-[#d4b896] hover:bg-[#b49b82] transition-colors" href="#">🐦</a>
+            <a className="w-10 h-10 rounded-full grid place-items-center bg-[#d4b896] hover:bg-[#b49b82] transition-colors" href="https://www.instagram.com/papromakeovers/" target="_blank" rel="noopener noreferrer" aria-label="Instagram">📷</a>
           </div>
         </div>
         <div>

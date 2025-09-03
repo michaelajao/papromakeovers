@@ -1,27 +1,55 @@
 type Props = {
-  icon: string;
+  icon?: string;
   title: string;
-  price: string;
-  description: string;
-  features: string[];
-  href?: string;
+  description?: string;
+  features?: string[];
+  value: string; // slug used to preselect in booking form
 };
 
-export default function ServiceCard({ icon, title, price, description, features, href = "#booking" }: Props) {
+export default function ServiceCard({ icon, title, description, features, value }: Props) {
   return (
-    <div className="bg-white p-6 rounded-2xl shadow-[0_10px_30px_rgba(180,155,130,0.15)] hover:-translate-y-2 hover:shadow-[0_20px_40px_rgba(180,155,130,0.25)] transition text-center border border-[#f5f2ed]">
-      <div className="w-20 h-20 rounded-full bg-gradient-to-br from-[#d4b896] to-[#b49b82] text-white text-3xl grid place-items-center mx-auto mb-4 shadow-lg">
-        {icon}
+    <div className="group bg-white/80 backdrop-blur-sm p-8 rounded-3xl shadow-[0_8px_32px_rgba(180,155,130,0.12)] hover:-translate-y-3 hover:shadow-[0_16px_48px_rgba(180,155,130,0.2)] transition-all duration-500 text-center border border-[#e8e0d5] relative overflow-hidden">
+      {/* Background gradient overlay on hover */}
+      <div className="absolute inset-0 bg-gradient-to-br from-[#faf8f5] via-transparent to-[#f5f2ed] opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+      
+      <div className="relative z-10">
+        {icon ? (
+          <div className="w-24 h-24 rounded-full bg-gradient-to-br from-[#d4b896] via-[#c4a882] to-[#b49b82] text-white text-4xl grid place-items-center mx-auto mb-6 shadow-[0_8px_24px_rgba(180,155,130,0.3)] group-hover:scale-110 group-hover:rotate-6 transition-transform duration-500">
+            {icon}
+          </div>
+        ) : null}
+        
+        <h3 className="text-2xl font-bold text-[#4a4037] mb-4 group-hover:text-[#3a2f26] transition-colors duration-300">
+          {title}
+        </h3>
+        
+        {description ? (
+          <p className="text-[#6b5d4f] mb-6 leading-relaxed text-sm group-hover:text-[#5a4e42] transition-colors duration-300">
+            {description}
+          </p>
+        ) : null}
+        
+        {features?.length ? (
+          <ul className="text-left text-[#6b5d4f] mb-6 space-y-2">
+            {features.map((f) => (
+              <li key={f} className="flex items-start gap-3 text-sm">
+                <span className="text-[#d4b896] font-bold mt-0.5">✓</span>
+                <span>{f}</span>
+              </li>
+            ))}
+          </ul>
+        ) : null}
+        
+        <a 
+          href={`/?service=${encodeURIComponent(value)}#booking`} 
+          className="inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-[#d4b896] to-[#b49b82] text-white font-semibold px-8 py-3 shadow-[0_4px_16px_rgba(180,155,130,0.4)] hover:shadow-[0_6px_24px_rgba(180,155,130,0.6)] hover:from-[#c4a882] hover:to-[#a48a72] transform hover:scale-105 transition-all duration-300"
+        >
+          <span>Select Service</span>
+          <svg className="w-4 h-4 group-hover:translate-x-1 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+          </svg>
+        </a>
       </div>
-      <h3 className="text-xl font-semibold text-[#4a4037] mb-1">{title}</h3>
-      <div className="text-[#b49b82] font-bold text-xl mb-2">{price}</div>
-      <p className="text-[#6b5d4f] mb-4">{description}</p>
-      <ul className="text-left text-[#6b5d4f] mb-4">
-        {features.map((f) => (
-          <li key={f} className="py-1 before:content-['✓'] before:text-[#d4b896] before:font-bold before:mr-2">{f}</li>
-        ))}
-      </ul>
-      <a href={href} className="inline-block rounded-full bg-gradient-to-br from-[#d4b896] to-[#b49b82] text-white font-semibold px-5 py-2 shadow-lg hover:shadow-xl transition-shadow">Select Package</a>
     </div>
   );
 }
