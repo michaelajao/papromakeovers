@@ -172,7 +172,7 @@ export default async function Home() {
                 </div>
                 <div className="group transform hover:scale-105 transition-all duration-300">
                   <ServiceCard 
-                    icon="🧕" 
+                    icon="🏛️" 
                     title="Traditional Wedding" 
                     value="bridal-traditional"
                     description="Rich, cultural makeup that honours your heritage while enhancing your natural beauty for traditional ceremonies."
@@ -222,17 +222,6 @@ export default async function Home() {
         </div>
       </section>
 
-      <section id="booking" className="py-24 bg-gradient-to-br from-[#d4b896] to-[#b49b82] text-white">
-        <div className="max-w-[1200px] mx-auto px-5 text-center">
-          <h2 className="text-3xl sm:text-4xl font-bold mb-3">Book Your Appointment</h2>
-          <p className="text-white/90 mb-8">Ready to transform your look? Book your appointment today and let us create something beautiful together.</p>
-
-          <div className="max-w-[720px] mx-auto text-left bg-white/15 p-6 rounded-2xl backdrop-blur border border-white/20">
-            <BookingForm />
-          </div>
-        </div>
-      </section>
-
       <section id="gallery" className="py-24 bg-[#f5f2ed]">
         <div className="max-w-[1200px] mx-auto px-5">
           <h2 className="text-3xl sm:text-4xl font-bold text-center text-[#4a4037] mb-12">Our Work</h2>
@@ -258,6 +247,17 @@ export default async function Home() {
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
               </svg>
             </a>
+          </div>
+        </div>
+      </section>
+
+      <section id="booking" className="py-24 bg-gradient-to-br from-[#d4b896] to-[#b49b82] text-white">
+        <div className="max-w-[1200px] mx-auto px-5 text-center">
+          <h2 className="text-3xl sm:text-4xl font-bold mb-3">Book Your Appointment</h2>
+          <p className="text-white/90 mb-8">Ready to transform your look? Book your appointment today and let us create something beautiful together.</p>
+
+          <div className="max-w-[720px] mx-auto text-left bg-white/15 p-6 rounded-2xl backdrop-blur border border-white/20">
+            <BookingForm />
           </div>
         </div>
       </section>
