@@ -21,7 +21,7 @@ export async function sendBookingEmail(payload: {
     const { data, error } = await resend.emails.send({
       from: 'PaproMakeovers <bookings@papromakeovers.com>',
       to: [payload.email],
-      replyTo: 'papromakeroversstudios@gmail.com',
+      replyTo: 'papromakeoversstudios@gmail.com',
       subject: `Booking Confirmation - ${payload.service}`,
       html: `
         <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">

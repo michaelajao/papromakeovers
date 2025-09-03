@@ -57,7 +57,7 @@ export default function AdminCalendar({
     const status = getDateStatus(date);
     const todayDate = isToday(date);
 
-    const baseClasses = "w-10 h-10 flex items-center justify-center rounded-lg transition-all duration-200 relative text-sm font-semibold shadow-sm hover:shadow-md focus:outline-none focus:ring-2 focus:ring-offset-1";
+    const baseClasses = "w-1/2 h-12 mx-auto flex items-center justify-center rounded-lg transition-all duration-200 relative text-sm font-semibold shadow-sm hover:shadow-md focus:outline-none focus:ring-2 focus:ring-offset-1";
     
     switch (status) {
       case 'past':
@@ -128,7 +128,7 @@ export default function AdminCalendar({
         <div className="grid grid-cols-7 gap-2">
           {/* Leading empty cells */}
           {Array.from({ length: weekOffset }).map((_, i) => (
-            <div key={`lead-${i}`} className="w-10 h-10" />
+            <div key={`lead-${i}`} className="h-12" />
           ))}
 
           {/* Calendar dates */}

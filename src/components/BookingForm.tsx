@@ -90,7 +90,7 @@ export default function BookingForm() {
             <option value="party-guest-makeup">Party guest makeup</option>
             <option value="photoshoot-glam">Photoshoot glam</option>
             <option value="bridesmaids-bookings">Bridesmaids bookings</option>
-            <option value="prom-glam">Prom glam</option>
+            <option value="prom-glam">Graduation & Prom Glam</option>
             <option value="travel-makeup">Travel to client location makeup service</option>
             <option value="diy-makeup-class">DIY one on one makeup class</option>
           </optgroup>

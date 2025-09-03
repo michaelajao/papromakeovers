@@ -4,16 +4,16 @@ export default function Footer() {
       <div className="max-w-[1200px] mx-auto px-5 grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
         <div>
           <h3 className="text-[#d4b896] font-semibold mb-2">Contact Us</h3>
-          <p>📍 London, United Kingdom</p>
-          <p>📞 +44 7XXX XXX XXX</p>
-          <p>✉️ hello@papromakeovers.co.uk</p>
+          <p>📍 Coventry, United Kingdom</p>
+          <p>📞 +447368590564</p>
+          <p>✉️ papromakeoversstudios@gmail.com</p>
           <div className="flex gap-3 mt-4">
             <a className="w-10 h-10 rounded-full grid place-items-center bg-[#d4b896] hover:bg-[#b49b82] transition-colors" href="https://www.instagram.com/papromakeovers/" target="_blank" rel="noopener noreferrer" aria-label="Instagram">📷</a>
           </div>
         </div>
         <div>
           <h3 className="text-[#d4b896] font-semibold mb-2">Services</h3>
-          {['Bridal Makeup','Special Events','Photoshoot Makeup','Makeup Lessons'].map((s) => (
+          {['Studio makeup','Party guest makeup','Photoshoot glam','Bridesmaids bookings','Graduation & Prom Glam','Travel to client location makeup service','DIY one on one makeup class'].map((s) => (
             <p key={s}><a href="#services" className="text-[#f5f2ed]/80 hover:text-[#d4b896] transition-colors">{s}</a></p>
           ))}
         </div>
