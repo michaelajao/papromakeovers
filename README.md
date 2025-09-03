@@ -1,4 +1,4 @@
-PaproMakeovers website built with Next.js App Router, Tailwind CSS, and a simple booking flow.
+Papromakeovers website built with Next.js App Router, Tailwind CSS, and a simple booking flow.
 
 Getting started
 1. Copy env and fill values:

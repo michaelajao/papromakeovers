@@ -1,4 +1,5 @@
 import { Resend } from 'resend';
+import { BookingEmailTemplate } from '@/components/email-template';
 
 export async function sendBookingEmail(payload: {
   name: string;
@@ -19,36 +20,23 @@ export async function sendBookingEmail(payload: {
 
   try {
     const { data, error } = await resend.emails.send({
-      from: 'PaproMakeovers <bookings@papromakeovers.com>',
+      from: 'Papromakeovers <bookings@papromakeovers.com>',
       to: [payload.email],
+      bcc: ['papromakeoversstudios@gmail.com'],
       replyTo: 'papromakeoversstudios@gmail.com',
       subject: `Booking Confirmation - ${payload.service}`,
-      html: `
-        <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
-          <h2 style="color: #b49b82;">Booking Confirmation</h2>
-          <p>Dear ${payload.name},</p>
-          <p>Thank you for booking with PaproMakeovers! Your appointment has been confirmed.</p>
-          
-          <div style="background-color: #faf8f5; padding: 20px; border-radius: 8px; margin: 20px 0;">
-            <h3 style="color: #4a4037; margin-top: 0;">Appointment Details</h3>
-            <p><strong>Service:</strong> ${payload.service}</p>
-            <p><strong>Date:</strong> ${new Date(payload.date).toLocaleDateString()}</p>
-            <p><strong>Time:</strong> ${payload.time}</p>
-            <p><strong>Phone:</strong> ${payload.phone}</p>
-            ${payload.notes ? `<p><strong>Notes:</strong> ${payload.notes}</p>` : ''}
-          </div>
-          
-          <p>We look forward to seeing you! If you need to reschedule or have any questions, please contact us.</p>
-          
-          <p style="color: #666; font-size: 12px; margin-top: 30px;">
-            This is an automated confirmation email from PaproMakeovers.
-          </p>
-        </div>
-      `,
+      react: BookingEmailTemplate({
+        name: payload.name,
+        service: payload.service,
+        date: payload.date,
+        time: payload.time,
+        phone: payload.phone,
+        notes: payload.notes
+      }),
       text: `
 Dear ${payload.name},
 
-Thank you for booking with PaproMakeovers! Your appointment has been confirmed.
+Thank you for booking with Papromakeovers! Your appointment has been confirmed.
 
 APPOINTMENT DETAILS
 Service: ${payload.service}
@@ -59,7 +47,9 @@ ${payload.notes ? `Notes: ${payload.notes}` : ''}
 
 We look forward to seeing you! If you need to reschedule or have any questions, please contact us.
 
-This is an automated confirmation email from PaproMakeovers.
+You will receive an invoice in your email shortly.
+
+This is an automated confirmation email from Papromakeovers.
       `.trim(),
     });
 

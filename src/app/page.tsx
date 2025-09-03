@@ -2,6 +2,7 @@ import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import BookingForm from "@/components/BookingForm";
 import ServiceCard from "@/components/ServiceCard";
+import Image from "next/image";
 
 
 import path from "path";
@@ -47,18 +48,20 @@ export default async function Home() {
       <section id="about" className="py-24 bg-[#f5f2ed]">
         <div className="max-w-[1200px] mx-auto px-5 grid md:grid-cols-2 gap-16 items-center">
           <div>
-            <h2 className="text-3xl sm:text-4xl font-bold text-[#4a4037] mb-4">About PaproMakeovers</h2>
+            <h2 className="text-3xl sm:text-4xl font-bold text-[#4a4037] mb-4">About Papromakeovers</h2>
             <p className="text-[#6b5d4f] mb-4">With over 8 years of experience in the beauty industry, we specialize in creating stunning makeup looks for all occasions. Our passion is helping you look and feel your absolute best.</p>
             <p className="text-[#6b5d4f] mb-4">Whether it&apos;s your wedding day, a special event, or you simply want to treat yourself, we use only the finest products and techniques to ensure a flawless finish that lasts all day.</p>
             <p className="text-[#6b5d4f]">Based in the UK, we offer both studio appointments and mobile services to bring the luxury experience directly to you.</p>
           </div>
           <div className="text-center">
             <div className="relative w-[300px] h-[300px] mx-auto">
-              <div className="w-full h-full rounded-full overflow-hidden shadow-[0_20px_40px_rgba(180,155,130,0.3)] border-4 border-[#d4b896]">
-                <img 
+              <div className="relative w-full h-full rounded-full overflow-hidden shadow-[0_20px_40px_rgba(180,155,130,0.3)] border-4 border-[#d4b896]">
+                <Image 
                   src="/gallery/IMG_2177.PNG" 
                   alt="Professional Makeup Artist" 
-                  className="w-full h-full object-cover"
+                  fill
+                  sizes="300px"
+                  className="object-cover"
                 />
               </div>
               <div className="absolute -bottom-4 left-1/2 transform -translate-x-1/2 bg-white px-6 py-2 rounded-full shadow-lg border border-[#e5ddd1]">
@@ -83,7 +86,7 @@ export default async function Home() {
           <div className="mb-20">
             <h3 className="text-xl font-light text-[#4a4037] mb-12 text-center tracking-wide">Signature Services</h3>
             <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-              <div className="transform hover:scale-105 transition-all duration-300">
+              <div className="transform hover:scale-105 active:scale-[1.02] focus-within:scale-[1.02] transition-all duration-300">
                 <ServiceCard
                   title="Studio Makeup"
                   value="studio-makeup"
@@ -91,7 +94,7 @@ export default async function Home() {
                   description="1 hour · Enjoy a personalised makeover in our studio, created to suit your unique features and preferences. Ideal if you'd love to visit our space for a flawless look for any occasion."
                 />
               </div>
-              <div className="transform hover:scale-105 transition-all duration-300">
+              <div className="transform hover:scale-105 active:scale-[1.02] focus-within:scale-[1.02] transition-all duration-300">
                 <ServiceCard
                   title="Photoshoot Glam"
                   value="photoshoot-glam"
@@ -99,7 +102,7 @@ export default async function Home() {
                   description="1 hour 30 minutes · A detailed, camera-ready look that enhances your natural beauty under studio lights. Great for pre-wedding shoots, birthdays, headshots or brand photography."
                 />
               </div>
-              <div className="transform hover:scale-105 transition-all duration-300">
+              <div className="transform hover:scale-105 active:scale-[1.02] focus-within:scale-[1.02] transition-all duration-300">
                 <ServiceCard
                   title="Graduation & Prom Glam"
                   value="prom-glam"
@@ -114,7 +117,7 @@ export default async function Home() {
           <div className="mb-20">
             <h3 className="text-xl font-light text-[#4a4037] mb-12 text-center tracking-wide">Group Services</h3>
             <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-              <div className="transform hover:scale-105 transition-all duration-300">
+              <div className="transform hover:scale-105 active:scale-[1.02] focus-within:scale-[1.02] transition-all duration-300">
                 <ServiceCard
                   title="Party Guest Makeup"
                   value="party-guest-makeup"
@@ -122,7 +125,7 @@ export default async function Home() {
                   description="Perfect for weddings, birthdays and celebrations. Ideal for mother of the bride/groom and siblings. This is a group booking (minimum of 3 people)."
                 />
               </div>
-              <div className="transform hover:scale-105 transition-all duration-300">
+              <div className="transform hover:scale-105 active:scale-[1.02] focus-within:scale-[1.02] transition-all duration-300">
                 <ServiceCard
                   title="Bridesmaids Bookings"
                   value="bridesmaids-bookings"
@@ -130,7 +133,7 @@ export default async function Home() {
                   description="Cohesive, elegant looks for the bridal party. Long-lasting and picture-perfect for a full day of celebration. Group booking (minimum of 3 people)."
                 />
               </div>
-              <div className="transform hover:scale-105 transition-all duration-300">
+              <div className="transform hover:scale-105 active:scale-[1.02] focus-within:scale-[1.02] transition-all duration-300">
                 <ServiceCard
                   title="Travel Makeup Service"
                   value="travel-makeup"
@@ -197,7 +200,7 @@ export default async function Home() {
               <div className="w-12 h-px bg-[#d4b896] mx-auto"></div>
             </div>
             <div className="max-w-md mx-auto">
-              <div className="transform hover:scale-105 transition-all duration-300">
+              <div className="transform hover:scale-105 active:scale-[1.02] focus-within:scale-[1.02] transition-all duration-300">
                 <ServiceCard
                   title="DIY Makeup Masterclass"
                   value="diy-makeup-class"
@@ -215,8 +218,14 @@ export default async function Home() {
           <h2 className="text-3xl sm:text-4xl font-bold text-center text-[#4a4037] mb-12">Our Work</h2>
           <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
             {(galleryFiles.length ? galleryFiles : ["couple-1.jpg","couple-2.jpg","headshot-1.jpg","fashion-1.jpg","beauty-1.jpg"]).map((file) => (
-              <div key={file} className="aspect-square overflow-hidden rounded-2xl bg-[#e9e3db] hover:scale-[1.01] transition shadow-lg">
-                <img src={`/gallery/${file}`} alt="Gallery item" className="w-full h-full object-cover" />
+              <div key={file} className="relative aspect-square overflow-hidden rounded-2xl bg-[#e9e3db] hover:scale-[1.01] transition shadow-lg">
+                <Image 
+                  src={`/gallery/${file}`} 
+                  alt="Gallery item" 
+                  fill 
+                  sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
+                  className="object-cover" 
+                />
               </div>
             ))}
           </div>

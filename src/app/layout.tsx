@@ -15,7 +15,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "PaproMakeovers - Professional Makeup Artist | UK",
+  title: "Papromakeovers - Professional Makeup Artist | UK",
   description:
     "Professional makeup artistry for bridal, events, photoshoots and lessons across the UK.",
 };
