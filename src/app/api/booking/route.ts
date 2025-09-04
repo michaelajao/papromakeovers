@@ -54,7 +54,7 @@ export async function POST(req: NextRequest) {
       time: body.time,
       notes: body.notes,
     });
-  } catch (_) {
+  } catch {
     // Intentionally swallow email errors in production so booking still succeeds
   }
 
