@@ -67,7 +67,7 @@ export default function AdminPage() {
       setDates((prev) => [...prev, dateStr]);
       setSlotsByDate((prev) => ({ 
         ...prev, 
-        [dateStr]: ["09:00","11:00","13:00","15:00","17:00","19:00"] 
+        [dateStr]: ["06:00","07:00","08:00","09:00","10:00","11:00","12:00","13:00","14:00","15:00","16:00","17:00","18:00","19:00"] 
       }));
     }
     setHasUnsavedChanges(true);
@@ -288,7 +288,7 @@ export default function AdminPage() {
                       if (dayOfWeek !== 0) { // Skip Sundays
                         const dateStr = d.toISOString().slice(0, 10);
                         newDates.push(dateStr);
-                        newSlots[dateStr] = ["09:00","11:00","13:00","15:00","17:00","19:00"];
+                        newSlots[dateStr] = ["06:00","07:00","08:00","09:00","10:00","11:00","12:00","13:00","14:00","15:00","16:00","17:00","18:00","19:00"];
                       }
                     }
                     

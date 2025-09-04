@@ -17,28 +17,28 @@ type TimeRange = {
 };
 
 const PRESET_TEMPLATES = {
-  "Full Day": { start: "09:00", end: "17:00", duration: 120 },
-  "Morning Only": { start: "09:00", end: "12:00", duration: 60 },
-  "Afternoon Only": { start: "13:00", end: "17:00", duration: 60 },
-  "Evening Only": { start: "17:00", end: "20:00", duration: 60 },
+  "Full Day": { start: "06:00", end: "20:00", duration: 60 },
+  "Morning Only": { start: "06:00", end: "12:00", duration: 60 },
+  "Afternoon Only": { start: "12:00", end: "18:00", duration: 60 },
+  "Evening Only": { start: "18:00", end: "20:00", duration: 60 },
   "Weekend Hours": { start: "10:00", end: "18:00", duration: 90 },
 };
 
 const BUSINESS_HOURS = {
-  monday: { start: "09:00", end: "20:00" },
-  tuesday: { start: "09:00", end: "20:00" },
-  wednesday: { start: "09:00", end: "20:00" },
-  thursday: { start: "09:00", end: "20:00" },
-  friday: { start: "09:00", end: "20:00" },
-  saturday: { start: "08:00", end: "21:00" },
-  sunday: { start: "10:00", end: "18:00" },
+  monday: { start: "06:00", end: "20:00" },
+  tuesday: { start: "06:00", end: "20:00" },
+  wednesday: { start: "06:00", end: "20:00" },
+  thursday: { start: "06:00", end: "20:00" },
+  friday: { start: "06:00", end: "20:00" },
+  saturday: { start: "06:00", end: "20:00" },
+  sunday: { start: "06:00", end: "20:00" },
 };
 
 export default function TimeSlotManager({ date, initialSlots = [], onChange, onClose }: TimeSlotManagerProps) {
   const [timeRange, setTimeRange] = useState<TimeRange>({
-    start: "09:00",
-    end: "17:00",
-    duration: 120
+    start: "06:00",
+    end: "20:00",
+    duration: 60
   });
   const [customSlots, setCustomSlots] = useState<string[]>(initialSlots);
   const [mode, setMode] = useState<"range" | "custom">("range");
@@ -55,7 +55,7 @@ export default function TimeSlotManager({ date, initialSlots = [], onChange, onC
       setTimeRange({
         start: businessHours.start,
         end: businessHours.end,
-        duration: 120
+        duration: 60
       });
       setMode("range");
     }
