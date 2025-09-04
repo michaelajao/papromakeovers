@@ -57,6 +57,10 @@ export default function AdminPage() {
         delete newSlots[dateStr];
         return newSlots;
       });
+      // Close edit panel if we're removing the date being edited
+      if (editingDate === dateStr) {
+        setEditingDate(null);
+      }
     } else {
       // Add date with default slots
       setDates((prev) => [...prev, dateStr]);
@@ -122,16 +126,34 @@ export default function AdminPage() {
         </div>
 
         {/* Controls */}
-        <div className="flex justify-between items-center mb-8">
-          <div className="text-sm text-[#6b5d4f]">
-            {hasUnsavedChanges && (
-              <span className="text-orange-600 font-medium">• Unsaved changes</span>
-            )}
+        <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 mb-8">
+          <div className="flex items-center justify-between sm:justify-start">
+            <div className="text-sm text-[#6b5d4f]">
+              {hasUnsavedChanges && (
+                <span className="text-orange-600 font-medium">• Unsaved changes</span>
+              )}
+              {!hasUnsavedChanges && (
+                <span className="text-green-600 font-medium">• All changes saved</span>
+              )}
+            </div>
+            {/* Mobile save button */}
+            <button 
+              disabled={saving || !hasUnsavedChanges} 
+              onClick={save} 
+              className={`sm:hidden rounded px-4 py-2 text-sm shadow-lg transition-all ${
+                saving || !hasUnsavedChanges
+                  ? "bg-gray-300 text-gray-500 cursor-not-allowed"
+                  : "bg-gradient-to-br from-[#d4b896] to-[#b49b82] text-white hover:shadow-xl"
+              }`}
+            >
+              {saving ? "Saving..." : "Save"}
+            </button>
           </div>
+          {/* Desktop save button */}
           <button 
             disabled={saving || !hasUnsavedChanges} 
             onClick={save} 
-            className={`rounded px-6 py-2 shadow-lg transition-all ${
+            className={`hidden sm:block rounded px-6 py-2 shadow-lg transition-all ${
               saving || !hasUnsavedChanges
                 ? "bg-gray-300 text-gray-500 cursor-not-allowed"
                 : "bg-gradient-to-br from-[#d4b896] to-[#b49b82] text-white hover:shadow-xl"
@@ -299,6 +321,7 @@ export default function AdminPage() {
         {/* Time Slot Manager Modal */}
         {editingDate && (
           <TimeSlotManager
+            key={editingDate} // Force re-render when date changes
             date={editingDate}
             initialSlots={slotsByDate[editingDate] || []}
             onChange={handleSlotUpdate}
