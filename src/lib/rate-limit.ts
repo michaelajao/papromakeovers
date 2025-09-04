@@ -24,7 +24,6 @@ export function rateLimit(options: RateLimitOptions) {
   const {
     maxRequests,
     windowMs,
-    skipSuccessfulRequests = false,
     keyGenerator = (req: NextRequest) => getClientIP(req)
   } = options;
 

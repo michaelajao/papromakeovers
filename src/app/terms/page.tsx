@@ -23,7 +23,7 @@ export default function TermsOfServicePage() {
           <section className="mb-8">
             <h2 className="text-2xl font-semibold text-[#4a4037] mb-4">1. Agreement to Terms</h2>
             <p className="mb-4 text-[#6b5d4f] leading-relaxed">
-              These Terms of Service ("Terms") govern your use of Papromakeovers' makeup artistry services 
+              These Terms of Service (&quot;Terms&quot;) govern your use of Papromakeovers&apos; makeup artistry services 
               and website. By booking our services or using our website, you agree to be bound by these Terms.
             </p>
             <p className="mb-4 text-[#6b5d4f] leading-relaxed">

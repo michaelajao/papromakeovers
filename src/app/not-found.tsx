@@ -24,13 +24,13 @@ export default function NotFound() {
         {/* Error message */}
         <div className="mb-12">
           <h2 className="text-2xl sm:text-3xl font-semibold text-[#4a4037] mb-4">
-            Oops! This page has vanished like yesterday's makeup
+            Oops! This page has vanished like yesterday&apos;s makeup
           </h2>
           <p className="text-lg text-[#6b5d4f] mb-6 leading-relaxed">
-            The page you're looking for doesn't exist. It might have been moved, renamed, or perhaps it never existed in the first place.
+            The page you&apos;re looking for doesn&apos;t exist. It might have been moved, renamed, or perhaps it never existed in the first place.
           </p>
           <p className="text-[#6b5d4f]">
-            Don't worry though – we have plenty of beautiful makeup services waiting for you!
+            Don&apos;t worry though – we have plenty of beautiful makeup services waiting for you!
           </p>
         </div>
 

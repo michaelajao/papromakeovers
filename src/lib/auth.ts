@@ -1,6 +1,5 @@
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
-import crypto from 'crypto';
 
 // Types
 export interface SessionData {
@@ -47,7 +46,7 @@ export function createSession(sessionData: SessionData): string {
 
 export function verifySession(token: string): SessionData | null {
   try {
-    const decoded = jwt.verify(token, JWT_SECRET) as any;
+    const decoded = jwt.verify(token, JWT_SECRET) as jwt.JwtPayload & SessionData & { expiresAt?: number };
     
     // Check if token is expired
     if (decoded.expiresAt && Date.now() > decoded.expiresAt) {
@@ -67,7 +66,17 @@ export function verifySession(token: string): SessionData | null {
 
 // Reset token utilities
 export function generateResetToken(): string {
-  return crypto.randomBytes(32).toString('hex');
+  // Use Web Crypto API for Edge Runtime compatibility
+  const array = new Uint8Array(32);
+  if (typeof window !== 'undefined') {
+    window.crypto.getRandomValues(array);
+  } else {
+    // For Node.js environment
+    // eslint-disable-next-line @typescript-eslint/no-require-imports
+    const crypto = require('crypto');
+    return crypto.randomBytes(32).toString('hex');
+  }
+  return Array.from(array, byte => byte.toString(16).padStart(2, '0')).join('');
 }
 
 export function createResetToken(email: string): ResetToken {
@@ -161,8 +170,8 @@ export function isValidAdminCredentials(password: string): boolean {
 export function getSecurityHeaders() {
   const isProduction = process.env.NODE_ENV === 'production';
   
-  // Nonce for inline scripts (you can implement nonce generation if needed)
-  const cspDirectives = [
+  // More permissive CSP for development, strict for production
+  const cspDirectives = isProduction ? [
     "default-src 'self'",
     "script-src 'self' https://vercel.live https://va.vercel-scripts.com https://vitals.vercel-insights.com",
     "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
@@ -174,9 +183,20 @@ export function getSecurityHeaders() {
     "form-action 'self'",
     "frame-ancestors 'none'",
     "upgrade-insecure-requests"
+  ] : [
+    "default-src 'self' 'unsafe-inline' 'unsafe-eval'",
+    "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://vercel.live https://va.vercel-scripts.com https://vitals.vercel-insights.com",
+    "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
+    "font-src 'self' https://fonts.gstatic.com",
+    "img-src 'self' data: blob: https:",
+    "connect-src 'self' ws: wss: https://vercel.live https://va.vercel-scripts.com https://vitals.vercel-insights.com https://eymlpuygdeqeyoynfjxg.supabase.co",
+    "object-src 'none'",
+    "base-uri 'self'",
+    "form-action 'self'",
+    "frame-ancestors 'none'"
   ];
 
-  const headers = {
+  const headers: Record<string, string> = {
     // Content Security Policy
     'Content-Security-Policy': cspDirectives.join('; '),
     

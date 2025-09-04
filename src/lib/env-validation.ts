@@ -231,8 +231,10 @@ if (process.env.NODE_ENV !== 'production') {
   }
 }
 
-export default {
+const envValidation = {
   validate: validateEnvironmentVariables,
   logResults: logValidationResults,
   ENV_VARIABLES
 };
+
+export default envValidation;

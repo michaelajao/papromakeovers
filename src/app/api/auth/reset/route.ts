@@ -21,7 +21,7 @@ function getClientIP(req: NextRequest): string {
   if (realIP) return realIP;
   if (cfIP) return cfIP;
   
-  return req.ip || 'unknown';
+  return 'unknown';
 }
 
 export async function POST(req: NextRequest) {

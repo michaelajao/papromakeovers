@@ -23,7 +23,7 @@ export default function PrivacyPolicyPage() {
           <section className="mb-8">
             <h2 className="text-2xl font-semibold text-[#4a4037] mb-4">1. Introduction</h2>
             <p className="mb-4 text-[#6b5d4f] leading-relaxed">
-              Papromakeovers ("we," "us," or "our") is committed to protecting your privacy and personal data. 
+              Papromakeovers (&quot;we,&quot; &quot;us,&quot; or &quot;our&quot;) is committed to protecting your privacy and personal data. 
               This Privacy Policy explains how we collect, use, process, and protect your information when you 
               use our makeup artistry services and website.
             </p>
@@ -123,7 +123,7 @@ export default function PrivacyPolicyPage() {
             <p className="mb-4 text-[#6b5d4f] leading-relaxed">
               Our website uses essential cookies for functionality and analytics cookies to understand how 
               visitors use our site. We use Vercel Analytics for privacy-focused website analytics that 
-              doesn't track individual users.
+              doesn&apos;t track individual users.
             </p>
             <p className="text-[#6b5d4f] leading-relaxed">
               You can control cookies through your browser settings, but disabling essential cookies may 
@@ -157,7 +157,7 @@ export default function PrivacyPolicyPage() {
             <h2 className="text-2xl font-semibold text-[#4a4037] mb-4">11. Updates to This Policy</h2>
             <p className="text-[#6b5d4f] leading-relaxed">
               We may update this Privacy Policy from time to time. When we do, we will post the updated policy 
-              on this page and update the "last updated" date. We encourage you to review this policy periodically.
+              on this page and update the &quot;last updated&quot; date. We encourage you to review this policy periodically.
             </p>
           </section>
 
@@ -171,8 +171,8 @@ export default function PrivacyPolicyPage() {
                 <strong>Address:</strong> Coventry, United Kingdom
               </p>
               <p className="mt-4 text-[#6b5d4f]">
-                If you're not satisfied with our response, you have the right to lodge a complaint with the 
-                Information Commissioner's Office (ICO) at <a href="https://ico.org.uk" className="text-[#b49b82] underline">ico.org.uk</a>
+                If you&apos;re not satisfied with our response, you have the right to lodge a complaint with the 
+                Information Commissioner&apos;s Office (ICO) at <a href="https://ico.org.uk" className="text-[#b49b82] underline">ico.org.uk</a>
               </p>
             </div>
           </section>

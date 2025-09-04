@@ -25,7 +25,7 @@ function getClientIP(req: NextRequest): string {
     return cfIP;
   }
   
-  return req.ip || 'unknown';
+  return 'unknown';
 }
 
 export async function POST(req: NextRequest) {
@@ -123,7 +123,7 @@ export async function POST(req: NextRequest) {
   }
 }
 
-export async function DELETE(req: NextRequest) {
+export async function DELETE() {
   // Logout endpoint
   try {
     const response = NextResponse.json(

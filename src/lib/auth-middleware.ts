@@ -6,8 +6,6 @@ export interface SessionData {
   rememberMe: boolean;
 }
 
-const JWT_SECRET = process.env.JWT_SECRET || 'fallback-secret-key-for-development';
-
 export function verifySession(token: string): SessionData | null {
   try {
     // Simple JWT verification without node crypto
