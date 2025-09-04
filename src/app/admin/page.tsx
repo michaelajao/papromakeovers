@@ -12,7 +12,6 @@ export default function AdminPage() {
   const [dates, setDates] = useState<string[]>([]);
   const [slotsByDate, setSlotsByDate] = useState<Record<string, string[]>>({});
   const [saving, setSaving] = useState(false);
-  const [passcode, setPasscode] = useState("");
   const [editingDate, setEditingDate] = useState<string | null>(null);
   const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
   type AdminBooking = { id: number; name: string; service: string; date: string; time: string; status: string };
@@ -34,7 +33,7 @@ export default function AdminPage() {
       }
       // Load bookings for the month (admin only)
       try {
-        const br = await fetch(`/api/bookings?month=${month}`, { headers: { "x-admin-passcode": passcode || "" } });
+        const br = await fetch(`/api/bookings?month=${month}`);
         if (br.ok) {
           const bj = (await br.json()) as { bookings: AdminBooking[] };
           setBookings(bj.bookings);
@@ -45,7 +44,7 @@ export default function AdminPage() {
         setBookings([]);
       }
     })();
-  }, [month, passcode]);
+  }, [month]);
 
   function handleDateSelect(dateStr: string) {
     const isCurrentlySelected = dates.includes(dateStr);
@@ -91,11 +90,11 @@ export default function AdminPage() {
   async function save() {
     setSaving(true);
     try {
-      const res = await fetch("/api/availability", {
-        method: "POST",
-        headers: { "Content-Type": "application/json", "x-admin-passcode": passcode },
-        body: JSON.stringify({ month, dates, slotsByDate }),
-      });
+          const res = await fetch("/api/availability", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ month, dates, slotsByDate }),
+    });
       if (!res.ok) throw new Error("Save failed");
       alert("Availability saved");
       setHasUnsavedChanges(false);
@@ -123,30 +122,23 @@ export default function AdminPage() {
         </div>
 
         {/* Controls */}
-        <div className="grid sm:grid-cols-2 gap-4 items-end mb-8">
-          <div>
-            <label className="block text-sm font-medium mb-2 text-[#6b5d4f]">Admin Passcode</label>
-            <input 
-              type="password"
-              value={passcode} 
-              onChange={(e) => setPasscode(e.target.value)} 
-              className="w-full border border-[#d4b896] rounded px-3 py-2 bg-white text-[#4a4037] focus:border-[#b49b82] focus:outline-none" 
-              placeholder="Enter passcode" 
-            />
+        <div className="flex justify-between items-center mb-8">
+          <div className="text-sm text-[#6b5d4f]">
+            {hasUnsavedChanges && (
+              <span className="text-orange-600 font-medium">• Unsaved changes</span>
+            )}
           </div>
-          <div>
-            <button 
-              disabled={saving || !passcode} 
-              onClick={save} 
-              className={`w-full rounded px-4 py-2 shadow-lg transition-all ${
-                saving || !passcode
-                  ? "bg-gray-300 text-gray-500 cursor-not-allowed"
-                  : "bg-gradient-to-br from-[#d4b896] to-[#b49b82] text-white hover:shadow-xl"
-              } ${hasUnsavedChanges ? 'ring-2 ring-yellow-400 ring-opacity-50' : ''}`}
-            >
-              {saving ? "Saving..." : "Save Availability"}
-            </button>
-          </div>
+          <button 
+            disabled={saving || !hasUnsavedChanges} 
+            onClick={save} 
+            className={`rounded px-6 py-2 shadow-lg transition-all ${
+              saving || !hasUnsavedChanges
+                ? "bg-gray-300 text-gray-500 cursor-not-allowed"
+                : "bg-gradient-to-br from-[#d4b896] to-[#b49b82] text-white hover:shadow-xl"
+            }`}
+          >
+            {saving ? "Saving..." : "Save Availability"}
+          </button>
         </div>
 
         {/* Enhanced Calendar */}
@@ -236,9 +228,9 @@ export default function AdminPage() {
                       <div className="flex items-center gap-2">
                         <button
                           onClick={async () => {
-                            await fetch('/api/bookings', { method: 'PATCH', headers: { 'Content-Type': 'application/json', 'x-admin-passcode': passcode || '' }, body: JSON.stringify({ id: b.id, action: 'accept' }) });
+                            await fetch('/api/bookings', { method: 'PATCH', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ id: b.id, action: 'accept' }) });
                             // reload
-                            const br = await fetch(`/api/bookings?month=${month}`, { headers: { 'x-admin-passcode': passcode || '' } });
+                            const br = await fetch(`/api/bookings?month=${month}`, );
                             if (br.ok) { const bj = await br.json(); setBookings(bj.bookings); }
                           }}
                           className="px-2 py-1 text-xs bg-emerald-50 hover:bg-emerald-100 text-emerald-700 rounded"
@@ -247,8 +239,8 @@ export default function AdminPage() {
                         </button>
                         <button
                           onClick={async () => {
-                            await fetch('/api/bookings', { method: 'PATCH', headers: { 'Content-Type': 'application/json', 'x-admin-passcode': passcode || '' }, body: JSON.stringify({ id: b.id, action: 'cancel' }) });
-                            const br = await fetch(`/api/bookings?month=${month}`, { headers: { 'x-admin-passcode': passcode || '' } });
+                            await fetch('/api/bookings', { method: 'PATCH', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ id: b.id, action: 'cancel' }) });
+                            const br = await fetch(`/api/bookings?month=${month}`, );
                             if (br.ok) { const bj = await br.json(); setBookings(bj.bookings); }
                           }}
                           className="px-2 py-1 text-xs bg-red-50 hover:bg-red-100 text-red-700 rounded"

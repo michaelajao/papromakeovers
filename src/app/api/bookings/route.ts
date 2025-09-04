@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createServerAdminClient } from "@/utils/supabase/server";
+import { verifySession } from "@/lib/auth";
 
 function getMonthRange(month: string) {
   // month in YYYY-MM
@@ -12,10 +13,15 @@ function getMonthRange(month: string) {
 }
 
 export async function GET(req: NextRequest) {
-  const adminHeader = req.headers.get("x-admin-passcode");
-  const pass = process.env.ADMIN_PASSCODE;
-  if (!pass || adminHeader !== pass) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  // Verify admin session
+  const sessionCookie = req.cookies.get('admin-session');
+  if (!sessionCookie) {
+    return NextResponse.json({ error: "Unauthorized - No session" }, { status: 401 });
+  }
+  
+  const sessionData = verifySession(sessionCookie.value);
+  if (!sessionData) {
+    return NextResponse.json({ error: "Unauthorized - Invalid session" }, { status: 401 });
   }
 
   const { searchParams } = new URL(req.url);
@@ -39,10 +45,15 @@ export async function GET(req: NextRequest) {
 }
 
 export async function PATCH(req: NextRequest) {
-  const adminHeader = req.headers.get("x-admin-passcode");
-  const pass = process.env.ADMIN_PASSCODE;
-  if (!pass || adminHeader !== pass) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  // Verify admin session
+  const sessionCookie = req.cookies.get('admin-session');
+  if (!sessionCookie) {
+    return NextResponse.json({ error: "Unauthorized - No session" }, { status: 401 });
+  }
+  
+  const sessionData = verifySession(sessionCookie.value);
+  if (!sessionData) {
+    return NextResponse.json({ error: "Unauthorized - Invalid session" }, { status: 401 });
   }
 
   const body = (await req.json()) as { id: number; action: "accept" | "cancel" };

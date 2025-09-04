@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient, createServerAdminClient } from "@/utils/supabase/server";
 import { withRateLimit, availabilityRateLimit } from "@/lib/rate-limit";
+import { verifySession } from "@/lib/auth";
 
 async function handleGetAvailability(req: NextRequest) {
   const { searchParams } = new URL(req.url);
@@ -30,10 +31,15 @@ async function handleGetAvailability(req: NextRequest) {
 }
 
 async function handleUpdateAvailability(req: NextRequest) {
-  const adminHeader = req.headers.get("x-admin-passcode");
-  const pass = process.env.ADMIN_PASSCODE;
-  if (!pass || adminHeader !== pass) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  // Verify admin session
+  const sessionCookie = req.cookies.get('admin-session');
+  if (!sessionCookie) {
+    return NextResponse.json({ error: "Unauthorized - No session" }, { status: 401 });
+  }
+  
+  const sessionData = verifySession(sessionCookie.value);
+  if (!sessionData) {
+    return NextResponse.json({ error: "Unauthorized - Invalid session" }, { status: 401 });
   }
   const body = (await req.json()) as { month: string; dates: string[]; slotsByDate: Record<string, string[]> };
   if (!body?.month || !Array.isArray(body?.dates) || typeof body?.slotsByDate !== "object") {
