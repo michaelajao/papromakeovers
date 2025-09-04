@@ -3,9 +3,11 @@
 import { useState, useEffect, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
+import { Eye, EyeOff } from 'lucide-react';
 
 function AdminLoginForm() {
   const [password, setPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
   const [rememberMe, setRememberMe] = useState(false);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
@@ -111,16 +113,31 @@ function AdminLoginForm() {
                 <label htmlFor="password" className="block text-sm font-medium text-[#4a4037] mb-2">
                   Admin Password
                 </label>
-                <input
-                  id="password"
-                  type="password"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  className="w-full px-4 py-3 border border-[#d4b896]/30 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#b49b82] focus:border-transparent bg-[#faf8f5] text-[#4a4037] placeholder-[#6b5d4f]/60"
-                  placeholder="Enter your password"
-                  required
-                  disabled={loading}
-                />
+                <div className="relative">
+                  <input
+                    id="password"
+                    type={showPassword ? "text" : "password"}
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    className="w-full px-4 py-3 pr-12 border border-[#d4b896]/30 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#b49b82] focus:border-transparent bg-[#faf8f5] text-[#4a4037] placeholder-[#6b5d4f]/60"
+                    placeholder="Enter your password"
+                    required
+                    disabled={loading}
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword(!showPassword)}
+                    className="absolute right-3 top-1/2 -translate-y-1/2 p-1 text-[#6b5d4f] hover:text-[#4a4037] focus:outline-none focus:ring-2 focus:ring-[#b49b82] focus:ring-offset-2 rounded transition-colors"
+                    aria-label={showPassword ? "Hide password" : "Show password"}
+                    disabled={loading}
+                  >
+                    {showPassword ? (
+                      <EyeOff className="h-5 w-5" />
+                    ) : (
+                      <Eye className="h-5 w-5" />
+                    )}
+                  </button>
+                </div>
               </div>
 
               <div className="flex items-center justify-between">
