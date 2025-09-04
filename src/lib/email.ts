@@ -1,6 +1,26 @@
 import { Resend } from 'resend';
 import { getBookingConfirmationEmailTemplate } from './email-templates';
 
+// Map service slugs to display names
+function getServiceDisplayName(serviceSlug: string): string {
+  const serviceMap: Record<string, string> = {
+    'studio-makeup': 'Studio makeup',
+    'party-guest-makeup': 'Party guest makeup', 
+    'photoshoot-glam': 'Photoshoot glam',
+    'bridesmaids-bookings': 'Bridesmaids bookings',
+    'prom-glam': 'Graduation & Prom Glam',
+    'travel-makeup': 'Travel to client location makeup service',
+    'diy-makeup-class': 'DIY one on one makeup class',
+    'gele-tying': 'Gele tying',
+    'bridal-civil': 'Civil wedding',
+    'bridal-traditional': 'Traditional wedding',
+    'bridal-white': 'White wedding',
+    'bridal-trial': 'Bridal trial'
+  };
+  
+  return serviceMap[serviceSlug] || serviceSlug;
+}
+
 export async function sendBookingEmail(payload: {
   name: string;
   email: string;
@@ -25,17 +45,16 @@ export async function sendBookingEmail(payload: {
     day: 'numeric'
   });
   
-  // Determine location based on service
-  const location = payload.service === 'Travel to client location makeup service' 
-    ? 'At your location' 
-    : 'PaproMakeovers Studio, Coventry';
-
+  // Get display name for service
+  const serviceDisplayName = getServiceDisplayName(payload.service);
+  
   const emailTemplate = getBookingConfirmationEmailTemplate(
     payload.name,
-    payload.service,
+    payload.email,
+    payload.phone,
+    serviceDisplayName,
     formattedDate,
-    payload.time,
-    location
+    payload.time
   );
 
   try {

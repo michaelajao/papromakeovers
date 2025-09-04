@@ -2,18 +2,18 @@ export function getPasswordResetEmailTemplate(resetToken: string, baseUrl: strin
   const resetUrl = `${baseUrl}/admin/reset-password?token=${resetToken}`;
   
   return {
-    subject: 'PaproMakeovers Admin - Password Reset Request',
+    subject: 'Papromakeovers Admin - Password Reset Request',
     html: `
       <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
         <div style="text-align: center; margin-bottom: 30px;">
-          <h1 style="color: #b49b82; margin-bottom: 10px;">PaproMakeovers</h1>
+          <h1 style="color: #b49b82; margin-bottom: 10px;">Papromakeovers</h1>
           <h2 style="color: #4a4037; font-weight: normal;">Password Reset Request</h2>
         </div>
         
         <div style="background-color: #faf8f5; padding: 25px; border-radius: 10px; margin-bottom: 25px;">
           <p style="color: #4a4037; margin-bottom: 15px;">Hello,</p>
           <p style="color: #4a4037; margin-bottom: 15px;">
-            You requested a password reset for your PaproMakeovers admin account.
+            You requested a password reset for your Papromakeovers admin account.
           </p>
           <p style="color: #4a4037; margin-bottom: 20px;">
             Click the button below to reset your password. This link will expire in 15 minutes for security.
@@ -54,18 +54,18 @@ export function getPasswordResetEmailTemplate(resetToken: string, baseUrl: strin
         
         <div style="text-align: center; margin-top: 30px; padding-top: 20px; border-top: 1px solid #f5f2ed;">
           <p style="color: #6b5d4f; font-size: 12px; margin: 0;">
-            PaproMakeovers Admin Portal<br>
+            Papromakeovers Admin Portal<br>
             This is an automated security email.
           </p>
         </div>
       </div>
     `,
     text: `
-PaproMakeovers - Password Reset Request
+Papromakeovers - Password Reset Request
 
 Hello,
 
-You requested a password reset for your PaproMakeovers admin account.
+You requested a password reset for your Papromakeovers admin account.
 
 To reset your password, visit this link (expires in 15 minutes):
 ${resetUrl}
@@ -75,7 +75,7 @@ Security Notice:
 - If you didn't request this reset, ignore this email
 - Never share this link with anyone
 
-PaproMakeovers Admin Portal
+Papromakeovers Admin Portal
 This is an automated security email.
     `.trim()
   };
@@ -83,18 +83,19 @@ This is an automated security email.
 
 
 export function getBookingConfirmationEmailTemplate(
-  customerName: string, 
+  customerName: string,
+  customerEmail: string,
+  customerPhone: string,
   service: string, 
   date: string, 
-  time: string, 
-  location: string
+  time: string
 ) {
   return {
     subject: `Booking Confirmation - ${service} on ${date}`,
     html: `
       <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
         <div style="text-align: center; margin-bottom: 30px;">
-          <h1 style="color: #b49b82; margin-bottom: 10px;">PaproMakeovers</h1>
+          <h1 style="color: #b49b82; margin-bottom: 10px;">Papromakeovers</h1>
           <h2 style="color: #4a4037; font-weight: normal;">Booking Confirmation</h2>
         </div>
         
@@ -120,8 +121,12 @@ export function getBookingConfirmationEmailTemplate(
                 <td style="padding: 8px 0;">${time}</td>
               </tr>
               <tr>
-                <td style="padding: 8px 0; font-weight: bold;">Location:</td>
-                <td style="padding: 8px 0;">${location}</td>
+                <td style="padding: 8px 0; font-weight: bold;">Email:</td>
+                <td style="padding: 8px 0;">${customerEmail}</td>
+              </tr>
+              <tr>
+                <td style="padding: 8px 0; font-weight: bold;">Phone:</td>
+                <td style="padding: 8px 0;">${customerPhone}</td>
               </tr>
             </table>
           </div>
@@ -145,14 +150,14 @@ export function getBookingConfirmationEmailTemplate(
           <p style="color: #b49b82; margin: 5px 0;">📞 +447368590564</p>
           <p style="color: #b49b82; margin: 5px 0;">✉️ papromakeoversstudio@gmail.com</p>
           <p style="color: #6b5d4f; font-size: 12px; margin-top: 15px;">
-            PaproMakeovers - Professional Makeup Artistry<br>
+            Papromakeovers - Professional Makeup Artistry<br>
             Coventry, United Kingdom
           </p>
         </div>
       </div>
     `,
     text: `
-PaproMakeovers - Booking Confirmation
+Papromakeovers - Booking Confirmation
 
 Dear ${customerName},
 
@@ -162,7 +167,8 @@ BOOKING DETAILS:
 Service: ${service}
 Date: ${date}
 Time: ${time}
-Location: ${location}
+Email: ${customerEmail}
+Phone: ${customerPhone}
 
 WHAT HAPPENS NEXT:
 - We'll contact you within 24 hours to confirm your appointment
@@ -175,7 +181,7 @@ Questions? Contact us:
 Phone: +447368590564
 Email: papromakeoversstudio@gmail.com
 
-PaproMakeovers - Professional Makeup Artistry
+Papromakeovers - Professional Makeup Artistry
 Coventry, United Kingdom
     `.trim()
   };
