@@ -79,6 +79,18 @@ export const metadata: Metadata = {
   // App manifest
   manifest: "/manifest.json",
 
+  // Favicon configuration
+  icons: {
+    icon: [
+      { url: '/favicon.svg', type: 'image/svg+xml' },
+      { url: '/favicon.ico', sizes: '32x32' },
+    ],
+    apple: [
+      { url: '/icon.svg', sizes: '180x180', type: 'image/svg+xml' },
+    ],
+    shortcut: '/favicon.ico',
+  },
+
   // Other metadata
   category: "Beauty & Personal Care",
   classification: "Professional Makeup Artist Services",
