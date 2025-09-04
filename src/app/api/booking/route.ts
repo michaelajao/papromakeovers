@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { sendBookingEmail } from "@/lib/email";
 import { createServerAdminClient } from "@/utils/supabase/server";
+import { withRateLimit, bookingRateLimit } from "@/lib/rate-limit";
 
 type BookingRequest = {
   service: string;
@@ -12,7 +13,7 @@ type BookingRequest = {
   time: string; // HH:mm
 };
 
-export async function POST(req: NextRequest) {
+async function handleBooking(req: NextRequest) {
   const body = (await req.json()) as BookingRequest;
   if (!body?.service || !body?.name || !body?.email || !body?.phone || !body?.date || !body?.time) {
     return NextResponse.json({ error: "Missing fields" }, { status: 400 });
@@ -60,5 +61,8 @@ export async function POST(req: NextRequest) {
 
   return NextResponse.json({ ok: true });
 }
+
+// Export the rate-limited POST handler
+export const POST = withRateLimit(bookingRateLimit, handleBooking);
 
 

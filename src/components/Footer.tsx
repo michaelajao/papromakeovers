@@ -41,7 +41,21 @@ export default function Footer() {
       </div>
       <div className="text-center text-[#f5f2ed]/70 mt-8 pt-8 border-t border-[#f5f2ed]/10">
         &copy; 2025 Papromakeovers. All rights reserved. | Registered in England & Wales
-        <div className="mt-2">
+        <div className="mt-3 flex justify-center items-center gap-4 text-sm">
+          <a 
+            href="/privacy" 
+            className="text-[#f5f2ed]/70 hover:text-[#d4b896] transition-colors"
+          >
+            Privacy Policy
+          </a>
+          <span className="text-[#f5f2ed]/40">•</span>
+          <a 
+            href="/terms" 
+            className="text-[#f5f2ed]/70 hover:text-[#d4b896] transition-colors"
+          >
+            Terms of Service
+          </a>
+          <span className="text-[#f5f2ed]/40">•</span>
           <a 
             href="/admin/login" 
             className="text-[#f5f2ed]/40 hover:text-[#d4b896] text-xs transition-colors"

@@ -159,13 +159,46 @@ export function isValidAdminCredentials(password: string): boolean {
 
 // Security headers
 export function getSecurityHeaders() {
-  return {
+  const isProduction = process.env.NODE_ENV === 'production';
+  
+  // Nonce for inline scripts (you can implement nonce generation if needed)
+  const cspDirectives = [
+    "default-src 'self'",
+    "script-src 'self' https://vercel.live https://va.vercel-scripts.com https://vitals.vercel-insights.com",
+    "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
+    "font-src 'self' https://fonts.gstatic.com",
+    "img-src 'self' data: blob: https:",
+    "connect-src 'self' https://vercel.live https://va.vercel-scripts.com https://vitals.vercel-insights.com wss: https://eymlpuygdeqeyoynfjxg.supabase.co",
+    "object-src 'none'",
+    "base-uri 'self'",
+    "form-action 'self'",
+    "frame-ancestors 'none'",
+    "upgrade-insecure-requests"
+  ];
+
+  const headers = {
+    // Content Security Policy
+    'Content-Security-Policy': cspDirectives.join('; '),
+    
+    // Security headers
     'X-Content-Type-Options': 'nosniff',
     'X-Frame-Options': 'DENY',
     'X-XSS-Protection': '1; mode=block',
     'Referrer-Policy': 'strict-origin-when-cross-origin',
-    'Content-Security-Policy': "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline';"
+    'Permissions-Policy': 'camera=(), microphone=(), geolocation=(), payment=()',
+    
+    // Additional security headers
+    'X-DNS-Prefetch-Control': 'off',
+    'X-Download-Options': 'noopen',
+    'X-Permitted-Cross-Domain-Policies': 'none'
   };
+
+  // Add HSTS header for production
+  if (isProduction) {
+    headers['Strict-Transport-Security'] = 'max-age=31536000; includeSubDomains; preload';
+  }
+
+  return headers;
 }
 
 // Cookie utilities

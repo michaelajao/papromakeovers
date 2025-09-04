@@ -1,7 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient, createServerAdminClient } from "@/utils/supabase/server";
+import { withRateLimit, availabilityRateLimit } from "@/lib/rate-limit";
 
-export async function GET(req: NextRequest) {
+async function handleGetAvailability(req: NextRequest) {
   const { searchParams } = new URL(req.url);
   const month = searchParams.get("month") || new Date().toISOString().slice(0, 7);
   
@@ -28,7 +29,7 @@ export async function GET(req: NextRequest) {
   return NextResponse.json({ dates, slotsByDate }, { status: 200 });
 }
 
-export async function POST(req: NextRequest) {
+async function handleUpdateAvailability(req: NextRequest) {
   const adminHeader = req.headers.get("x-admin-passcode");
   const pass = process.env.ADMIN_PASSCODE;
   if (!pass || adminHeader !== pass) {
@@ -51,5 +52,9 @@ export async function POST(req: NextRequest) {
   if (ins.error) return NextResponse.json({ error: ins.error.message }, { status: 500 });
   return NextResponse.json({ ok: true });
 }
+
+// Export the rate-limited handlers
+export const GET = withRateLimit(availabilityRateLimit, handleGetAvailability);
+export const POST = withRateLimit(availabilityRateLimit, handleUpdateAvailability);
 
 

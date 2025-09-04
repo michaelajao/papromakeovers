@@ -1,0 +1,81 @@
+{
+  "name": "Papromakeovers - Professional Makeup Artist",
+  "short_name": "Papromakeovers",
+  "description": "Professional makeup artistry for bridal, events, photoshoots and lessons across the UK",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#faf8f5",
+  "theme_color": "#b49b82",
+  "orientation": "portrait-primary",
+  "scope": "/",
+  "lang": "en-GB",
+  "categories": ["beauty", "lifestyle", "business"],
+  
+  "icons": [
+    {
+      "src": "/favicon.ico",
+      "sizes": "any",
+      "type": "image/x-icon"
+    }
+  ],
+
+  "shortcuts": [
+    {
+      "name": "Book Appointment",
+      "short_name": "Book",
+      "description": "Book your makeup appointment",
+      "url": "/#booking",
+      "icons": [
+        {
+          "src": "/favicon.ico",
+          "sizes": "any"
+        }
+      ]
+    },
+    {
+      "name": "View Gallery",
+      "short_name": "Gallery", 
+      "description": "View our makeup portfolio",
+      "url": "/#gallery",
+      "icons": [
+        {
+          "src": "/favicon.ico",
+          "sizes": "any"
+        }
+      ]
+    },
+    {
+      "name": "Our Services",
+      "short_name": "Services",
+      "description": "Explore our makeup services",
+      "url": "/#services", 
+      "icons": [
+        {
+          "src": "/favicon.ico",
+          "sizes": "any"
+        }
+      ]
+    }
+  ],
+
+  "related_applications": [
+    {
+      "platform": "web",
+      "url": "https://papromakeovers.com"
+    }
+  ],
+
+  "prefer_related_applications": false,
+
+  "screenshots": [],
+
+  "iarc_rating_id": "",
+  
+  "dir": "ltr",
+  
+  "serviceworker": {
+    "src": "/sw.js",
+    "scope": "/",
+    "update_via_cache": "imports"
+  }
+}

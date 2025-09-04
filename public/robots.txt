@@ -1,0 +1,49 @@
+# Robots.txt for Papromakeovers - Professional Makeup Artist
+# Website: https://papromakeovers.com
+
+User-agent: *
+
+# Allow all pages except admin areas
+Allow: /
+
+# Disallow admin and private areas
+Disallow: /admin/
+Disallow: /api/
+Disallow: /_next/
+Disallow: /.vercel/
+
+# Allow important pages for SEO
+Allow: /privacy
+Allow: /terms
+Allow: /gallery/
+
+# Block sensitive files
+Disallow: /*.json$
+Disallow: /*.log$
+Disallow: /*.env$
+
+# Sitemap location
+Sitemap: https://papromakeovers.com/sitemap.xml
+
+# Crawl-delay (optional - use if needed to reduce server load)
+# Crawl-delay: 1
+
+# Special rules for different user agents
+User-agent: Googlebot
+Allow: /
+
+User-agent: Bingbot
+Allow: /
+
+User-agent: facebookexternalhit
+Allow: /
+
+# Block known spam/malicious bots
+User-agent: AhrefsBot
+Disallow: /
+
+User-agent: MJ12bot
+Disallow: /
+
+User-agent: DotBot
+Disallow: /
