@@ -170,12 +170,12 @@ export function isValidAdminCredentials(password: string): boolean {
 export function getSecurityHeaders() {
   const isProduction = process.env.NODE_ENV === 'production';
   
-  // More permissive CSP for development, strict for production
+  // More permissive CSP for development, allow Next.js requirements in production
   const cspDirectives = isProduction ? [
     "default-src 'self'",
-    "script-src 'self' https://vercel.live https://va.vercel-scripts.com https://vitals.vercel-insights.com",
+    "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://vercel.live https://va.vercel-scripts.com https://vitals.vercel-insights.com",
     "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
-    "font-src 'self' https://fonts.gstatic.com",
+    "font-src 'self' https://fonts.gstatic.com https://fonts.googleapis.com data:",
     "img-src 'self' data: blob: https:",
     "connect-src 'self' https://vercel.live https://va.vercel-scripts.com https://vitals.vercel-insights.com wss: https://eymlpuygdeqeyoynfjxg.supabase.co",
     "object-src 'none'",
@@ -187,7 +187,7 @@ export function getSecurityHeaders() {
     "default-src 'self' 'unsafe-inline' 'unsafe-eval'",
     "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://vercel.live https://va.vercel-scripts.com https://vitals.vercel-insights.com",
     "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
-    "font-src 'self' https://fonts.gstatic.com",
+    "font-src 'self' https://fonts.gstatic.com https://fonts.googleapis.com data:",
     "img-src 'self' data: blob: https:",
     "connect-src 'self' ws: wss: https://vercel.live https://va.vercel-scripts.com https://vitals.vercel-insights.com https://eymlpuygdeqeyoynfjxg.supabase.co",
     "object-src 'none'",

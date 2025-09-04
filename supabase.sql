@@ -72,4 +72,3 @@ create policy "Service role can manage bookings" on public.bookings
 -- create policy "Users can read own bookings" on public.bookings 
 --   for select using (auth.email() = email);
 
-
