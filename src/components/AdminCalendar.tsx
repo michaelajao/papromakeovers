@@ -1,6 +1,6 @@
 "use client";
 
-import { eachDayOfInterval, endOfMonth, format, getDay, startOfMonth, addMonths, subMonths, isToday, isBefore } from "date-fns";
+import { eachDayOfInterval, endOfMonth, format, getDay, startOfMonth, addMonths, subMonths, isToday, isBefore, formatISO } from "date-fns";
 import { useMemo } from "react";
 
 type AdminCalendarProps = {
@@ -38,7 +38,7 @@ export default function AdminCalendar({
   };
 
   const getDateStatus = (date: Date) => {
-    const dateStr = date.toISOString().slice(0, 10);
+    const dateStr = formatISO(date, { representation: 'date' });
     const hasSlots = slotsByDate[dateStr] && slotsByDate[dateStr].length > 0;
     const isSelected = selectedSet.has(dateStr);
     const isPast = isBefore(date, today) && !isToday(date);
@@ -79,7 +79,7 @@ export default function AdminCalendar({
     const isPastDate = isBefore(date, today) && !isToday(date);
     if (isPastDate) return;
     
-    const dateStr = date.toISOString().slice(0, 10);
+    const dateStr = formatISO(date, { representation: 'date' });
     onDateSelect(dateStr);
   };
 
@@ -88,7 +88,7 @@ export default function AdminCalendar({
     const isPastDate = isBefore(date, today) && !isToday(date);
     if (isPastDate) return;
     
-    const dateStr = date.toISOString().slice(0, 10);
+    const dateStr = formatISO(date, { representation: 'date' });
     onDateEdit(dateStr);
   };
 
@@ -133,7 +133,7 @@ export default function AdminCalendar({
 
           {/* Calendar dates */}
           {days.map((date) => {
-            const dateStr = date.toISOString().slice(0, 10);
+            const dateStr = formatISO(date, { representation: 'date' });
             const slotCount = slotsByDate[dateStr]?.length || 0;
             const status = getDateStatus(date);
 

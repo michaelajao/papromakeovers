@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import AdminCalendar from "@/components/AdminCalendar";
 import TimeSlotManager from "@/components/TimeSlotManager";
+import { format, parseISO } from "date-fns";
 
 type Payload = { month: string; dates: string[]; slotsByDate: Record<string, string[]> };
 
@@ -211,11 +212,7 @@ export default function AdminPage() {
                   {dates.sort().map((d) => (
                     <div key={d} className="flex items-center justify-between text-sm">
                       <span className="text-[#4a4037]">
-                        {new Date(d).toLocaleDateString('en-US', { 
-                          weekday: 'short', 
-                          month: 'short', 
-                          day: 'numeric' 
-                        })}
+                        {format(parseISO(d), 'EEE, MMM d')}
                       </span>
                       <div className="flex items-center gap-2">
                         <span className="text-[#6b5d4f]">
