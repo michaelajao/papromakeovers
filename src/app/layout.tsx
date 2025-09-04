@@ -79,14 +79,6 @@ export const metadata: Metadata = {
   // App manifest
   manifest: "/manifest.json",
 
-  icons: {
-    icon: "/favicon.ico",
-    shortcut: "/favicon.ico",
-    other: [
-      { rel: "icon", url: "/icon.svg" }
-    ],
-  },
-
   // Other metadata
   category: "Beauty & Personal Care",
   classification: "Professional Makeup Artist Services",
