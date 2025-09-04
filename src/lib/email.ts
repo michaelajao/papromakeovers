@@ -1,5 +1,5 @@
 import { Resend } from 'resend';
-import { BookingEmailTemplate } from '@/components/email-template';
+import { getBookingConfirmationEmailTemplate } from './email-templates';
 
 export async function sendBookingEmail(payload: {
   name: string;
@@ -17,6 +17,26 @@ export async function sendBookingEmail(payload: {
   }
 
   const resend = new Resend(resendApiKey);
+  
+  const formattedDate = new Date(payload.date).toLocaleDateString('en-GB', {
+    weekday: 'long',
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric'
+  });
+  
+  // Determine location based on service
+  const location = payload.service === 'Travel to client location makeup service' 
+    ? 'At your location' 
+    : 'PaproMakeovers Studio, Coventry';
+
+  const emailTemplate = getBookingConfirmationEmailTemplate(
+    payload.name,
+    payload.service,
+    formattedDate,
+    payload.time,
+    location
+  );
 
   try {
     const { data, error } = await resend.emails.send({
@@ -24,33 +44,9 @@ export async function sendBookingEmail(payload: {
       to: [payload.email],
       bcc: ['papromakeoversstudio@gmail.com'],
       replyTo: 'papromakeoversstudio@gmail.com',
-      subject: `Booking Confirmation - ${payload.service}`,
-      react: BookingEmailTemplate({
-        name: payload.name,
-        service: payload.service,
-        date: payload.date,
-        time: payload.time,
-        phone: payload.phone,
-        notes: payload.notes
-      }),
-      text: `
-Dear ${payload.name},
-
-Thank you for booking with Papromakeovers! Your appointment has been confirmed.
-
-APPOINTMENT DETAILS
-Service: ${payload.service}
-Date: ${new Date(payload.date).toLocaleDateString()}
-Time: ${payload.time}
-Phone: ${payload.phone}
-${payload.notes ? `Notes: ${payload.notes}` : ''}
-
-We look forward to seeing you! If you need to reschedule or have any questions, please contact us.
-
-You will receive an invoice in your email shortly.
-
-This is an automated confirmation email from Papromakeovers.
-      `.trim(),
+      subject: emailTemplate.subject,
+      html: emailTemplate.html,
+      text: emailTemplate.text,
     });
 
     if (error) {

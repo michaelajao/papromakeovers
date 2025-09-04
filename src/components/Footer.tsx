@@ -23,7 +23,7 @@ export default function Footer() {
         </div>
         <div>
           <h3 className="text-[#d4b896] font-semibold mb-2">Services</h3>
-          {['Studio makeup','Party guest makeup','Photoshoot glam','Bridesmaids bookings','Graduation & Prom Glam','Travel to client location makeup service','DIY one on one makeup class'].map((s) => (
+          {['Studio makeup','Party guest makeup','Photoshoot glam','Bridesmaids bookings','Graduation & Prom Glam','Travel to client location makeup service','DIY one on one makeup class','Gele tying'].map((s) => (
             <p key={s}><a href="#services" className="text-[#f5f2ed]/80 hover:text-[#d4b896] transition-colors">{s}</a></p>
           ))}
         </div>
@@ -41,6 +41,15 @@ export default function Footer() {
       </div>
       <div className="text-center text-[#f5f2ed]/70 mt-8 pt-8 border-t border-[#f5f2ed]/10">
         &copy; 2025 Papromakeovers. All rights reserved. | Registered in England & Wales
+        <div className="mt-2">
+          <a 
+            href="/admin/login" 
+            className="text-[#f5f2ed]/40 hover:text-[#d4b896] text-xs transition-colors"
+            title="Admin Access"
+          >
+            Admin
+          </a>
+        </div>
       </div>
     </footer>
   );

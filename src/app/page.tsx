@@ -85,13 +85,13 @@ export default async function Home() {
           {/* Main Services */}
           <div className="mb-20">
             <h3 className="text-xl font-light text-[#4a4037] mb-12 text-center tracking-wide">Signature Services</h3>
-            <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
               <div className="transform hover:scale-105 active:scale-[1.02] focus-within:scale-[1.02] transition-all duration-300">
                 <ServiceCard
                   title="Studio Makeup"
                   value="studio-makeup"
                   category="Signature Service"
-                  description="1 hour · Enjoy a personalised makeover in our studio, created to suit your unique features and preferences. Ideal if you'd love to visit our space for a flawless look for any occasion."
+                  description="Enjoy a personalised makeover in our studio, created to suit your unique features and preferences. Ideal if you'd love to visit our space for a flawless look for any occasion."
                 />
               </div>
               <div className="transform hover:scale-105 active:scale-[1.02] focus-within:scale-[1.02] transition-all duration-300">
@@ -99,7 +99,7 @@ export default async function Home() {
                   title="Photoshoot Glam"
                   value="photoshoot-glam"
                   category="Signature Service"
-                  description="1 hour 30 minutes · A detailed, camera-ready look that enhances your natural beauty under studio lights. Great for pre-wedding shoots, birthdays, headshots or brand photography."
+                  description="A detailed, camera-ready look that enhances your natural beauty under studio lights. Great for pre-wedding shoots, birthdays, headshots or brand photography."
                 />
               </div>
               <div className="transform hover:scale-105 active:scale-[1.02] focus-within:scale-[1.02] transition-all duration-300">
@@ -107,7 +107,15 @@ export default async function Home() {
                   title="Graduation & Prom Glam"
                   value="prom-glam"
                   category="Signature Service"
-                  description="1 hour · A youthful, radiant and stylish look for graduation ceremonies and prom night - soft glam or bold drama to match your vibe and outfit."
+                  description="A youthful, radiant and stylish look for graduation ceremonies and prom night - soft glam or bold drama to match your vibe and outfit."
+                />
+              </div>
+              <div className="transform hover:scale-105 active:scale-[1.02] focus-within:scale-[1.02] transition-all duration-300">
+                <ServiceCard
+                  title="Gele Tying"
+                  value="gele-tying"
+                  category="Cultural Service"
+                  description="Professional gele tying and styling for Nigerian traditional ceremonies, weddings, and cultural events. Authentic techniques with modern flair."
                 />
               </div>
             </div>
@@ -138,7 +146,7 @@ export default async function Home() {
                   title="Travel Makeup Service"
                   value="travel-makeup"
                   category="Mobile Service"
-                  description="1 hour 30 minutes · Bringing the glam to your home, hotel or venue. Note: additional travel fees apply based on location."
+                  description="Bringing the glam to your home, hotel or venue. Note: additional travel fees apply based on location."
                 />
               </div>
             </div>
@@ -205,7 +213,7 @@ export default async function Home() {
                   title="DIY Makeup Masterclass"
                   value="diy-makeup-class"
                   category="Education"
-                  description="3 hours · A personalised lesson covering everyday basics or glam techniques - tailored to your level so you feel confident doing your own makeup."
+                  description="A personalised lesson covering everyday basics or glam techniques - tailored to your level so you feel confident doing your own makeup."
                 />
               </div>
             </div>

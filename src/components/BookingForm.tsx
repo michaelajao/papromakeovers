@@ -93,6 +93,7 @@ export default function BookingForm() {
             <option value="prom-glam">Graduation & Prom Glam</option>
             <option value="travel-makeup">Travel to client location makeup service</option>
             <option value="diy-makeup-class">DIY one on one makeup class</option>
+            <option value="gele-tying">Gele tying</option>
           </optgroup>
           <optgroup label="Bridal services">
             <option value="bridal-civil">Civil wedding</option>
