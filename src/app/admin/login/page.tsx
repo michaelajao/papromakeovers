@@ -121,6 +121,7 @@ function AdminLoginForm() {
                     onChange={(e) => setPassword(e.target.value)}
                     className="w-full px-4 py-3 pr-12 border border-[#d4b896]/30 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#b49b82] focus:border-transparent bg-[#faf8f5] text-[#4a4037] placeholder-[#6b5d4f]/60"
                     placeholder="Enter your password"
+                    autoComplete="current-password"
                     required
                     disabled={loading}
                   />
