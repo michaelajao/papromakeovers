@@ -204,32 +204,6 @@ export default function AdminPage() {
               </div>
             </div>
 
-            {/* Active Dates List */}
-            {dates.length > 0 && (
-              <div className="bg-white rounded-lg border border-[#f5f2ed] p-4">
-                <h3 className="font-semibold text-[#4a4037] mb-3">Active Dates</h3>
-                <div className="space-y-2 max-h-64 overflow-y-auto">
-                  {dates.sort().map((d) => (
-                    <div key={d} className="flex items-center justify-between text-sm">
-                      <span className="text-[#4a4037]">
-                        {format(parseISO(d), 'EEE, MMM d')}
-                      </span>
-                      <div className="flex items-center gap-2">
-                        <span className="text-[#6b5d4f]">
-                          {slotsByDate[d]?.length || 0} slots
-                        </span>
-                        <button
-                          onClick={() => setEditingDate(d)}
-                          className="px-2 py-1 text-xs bg-[#f5f2ed] hover:bg-[#d4b896] hover:text-white rounded transition-colors"
-                        >
-                          Edit
-                        </button>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            )}
 
             {/* Bookings Management */}
             <div className="bg-white rounded-lg border border-[#f5f2ed] p-4">

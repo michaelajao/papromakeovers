@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
+import { addMonths } from "date-fns";
 import Calendar from "@/components/Calendar";
 
 type AvailabilityResponse = {
@@ -17,7 +18,7 @@ export default function BookingForm() {
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
   const [selectedTime, setSelectedTime] = useState<string>("");
   const [availability, setAvailability] = useState<AvailabilityResponse | null>(null);
-  // Month is derived in-effect; no local state to avoid lint warnings
+  const [currentMonth, setCurrentMonth] = useState(new Date());
   const [submitting, setSubmitting] = useState(false);
 
   useEffect(() => {
@@ -27,11 +28,16 @@ export default function BookingForm() {
       const s = url.searchParams.get('service');
       if (s) setService(s);
     }
+  }, []);
+
+  // Load availability when month changes
+  useEffect(() => {
     const controller = new AbortController();
     async function loadAvailability() {
       try {
-        const now = new Date();
-        const params = new URLSearchParams({ month: `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}` });
+        const params = new URLSearchParams({ 
+          month: `${currentMonth.getFullYear()}-${String(currentMonth.getMonth() + 1).padStart(2, "0")}` 
+        });
         const res = await fetch(`/api/availability?${params.toString()}`, { signal: controller.signal });
         if (!res.ok) throw new Error("Failed to load availability");
         const data = (await res.json()) as AvailabilityResponse;
@@ -43,7 +49,13 @@ export default function BookingForm() {
     }
     loadAvailability();
     return () => controller.abort();
-  }, []);
+  }, [currentMonth]);
+
+  // Reset selected date and time when month changes
+  useEffect(() => {
+    setSelectedDate(null);
+    setSelectedTime("");
+  }, [currentMonth]);
 
   const timeSlots = useMemo(() => {
     if (!availability || !selectedDate) return [];
@@ -51,7 +63,9 @@ export default function BookingForm() {
     return availability.slotsByDate[key] ?? [];
   }, [availability, selectedDate]);
 
-  const month = useMemo(() => new Date(), []);
+  const changeMonth = (direction: number) => {
+    setCurrentMonth(prev => addMonths(prev, direction));
+  };
 
   async function submit(e: React.FormEvent) {
     e.preventDefault();
@@ -107,10 +121,11 @@ export default function BookingForm() {
       <div>
         <label className="block font-semibold mb-2">Select Date</label>
         <Calendar
-          month={month}
+          month={currentMonth}
           onSelect={setSelectedDate}
           selectedDate={selectedDate}
           availableDates={availability?.dates}
+          onChangeMonth={changeMonth}
         />
       </div>
 
