@@ -1,254 +1,112 @@
 "use client";
 
-import { useState, useEffect, Suspense } from 'react';
-import { useRouter, useSearchParams } from 'next/navigation';
-import Link from 'next/link';
-import { Eye, EyeOff } from 'lucide-react';
+import { useEffect, useState } from "react";
+import { useSearchParams } from "next/navigation";
+import Link from "next/link";
+import { Suspense } from "react";
+import { createClient } from "@/utils/supabase/client";
 
 function AdminLoginForm() {
-  const [password, setPassword] = useState('');
-  const [showPassword, setShowPassword] = useState(false);
-  const [rememberMe, setRememberMe] = useState(false);
-  const [error, setError] = useState('');
+  const [email, setEmail] = useState("");
+  const [sent, setSent] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [showResetForm, setShowResetForm] = useState(false);
-  const [resetEmail, setResetEmail] = useState('papromakeoversstudio@gmail.com');
-  const [resetMessage, setResetMessage] = useState('');
-  const [resetLoading, setResetLoading] = useState(false);
-  
-  const router = useRouter();
+  const [error, setError] = useState("");
+
   const searchParams = useSearchParams();
-  const redirectTo = searchParams.get('redirect') || '/admin';
-  const expired = searchParams.get('expired') === '1';
 
   useEffect(() => {
-    if (expired) {
-      setError('Your session has expired. Please log in again.');
-    }
-  }, [expired]);
+    const err = searchParams.get("error");
+    if (err === "auth-failed") setError("That sign-in link has expired or was already used. Request a new one below.");
+    else if (err === "not-admin") setError("This account doesn't have admin access.");
+  }, [searchParams]);
 
-  const handleLogin = async (e: React.FormEvent) => {
+  async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     setLoading(true);
-    setError('');
-
+    setError("");
     try {
-      const response = await fetch('/api/auth/login', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ password, rememberMe }),
+      const supabase = createClient();
+      const origin = window.location.origin;
+      const { error: otpError } = await supabase.auth.signInWithOtp({
+        email,
+        options: {
+          emailRedirectTo: `${origin}/auth/callback`,
+          shouldCreateUser: false,
+        },
       });
-
-      const data = await response.json();
-
-      if (response.ok) {
-        router.push(redirectTo);
-      } else {
-        setError(data.message || data.error || 'Login failed');
-        if (response.status === 429) {
-          setTimeout(() => setError(''), 5000);
-        }
-      }
-    } catch (error) {
-      console.error('Login error:', error);
-      setError('Network error. Please try again.');
+      if (otpError) throw otpError;
+      setSent(true);
+    } catch (e) {
+      const message = (e as Error).message ?? "Something went wrong. Please try again.";
+      setError(message.includes("Signups not allowed") ? "This email isn't registered as an admin." : message);
     } finally {
       setLoading(false);
     }
-  };
-
-  const handlePasswordReset = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setResetLoading(true);
-    setResetMessage('');
-
-    try {
-      const response = await fetch('/api/auth/reset', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email: resetEmail }),
-      });
-
-      const data = await response.json();
-
-      if (response.ok) {
-        setResetMessage('If this email is associated with an admin account, you will receive password reset instructions.');
-        setShowResetForm(false);
-      } else {
-        setResetMessage(data.message || data.error || 'Reset request failed');
-      }
-    } catch (error) {
-      console.error('Reset error:', error);
-      setResetMessage('Network error. Please try again.');
-    } finally {
-      setResetLoading(false);
-    }
-  };
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-[#faf8f5] to-[#f5f2ed] flex items-center justify-center p-4">
       <div className="w-full max-w-md">
         <div className="bg-white rounded-2xl shadow-xl p-8 border border-[#f5f2ed]">
           <div className="text-center mb-8">
-            <h1 className="text-3xl font-bold text-[#4a4037] mb-2">PaproMakeovers</h1>
+            <h1 className="font-serif text-3xl text-[#3a322b] mb-2">Papromakeovers</h1>
             <h2 className="text-lg text-[#6b5d4f]">Admin Portal</h2>
-            <div className="w-16 h-1 bg-gradient-to-r from-[#d4b896] to-[#b49b82] mx-auto mt-3 rounded-full"></div>
+            <div className="w-16 h-1 bg-gradient-to-r from-[#d4b896] to-[#b49b82] mx-auto mt-3 rounded-full" aria-hidden="true" />
           </div>
 
-          {!showResetForm ? (
-            <form onSubmit={handleLogin} className="space-y-6">
+          {sent ? (
+            <div className="space-y-4 text-center">
+              <div className="p-4 bg-green-50 border border-green-200 rounded-lg text-green-800 text-sm">
+                <p className="font-semibold mb-1">Check your email</p>
+                <p>We sent a sign-in link to <span className="font-medium">{email}</span>. Click the link to continue.</p>
+              </div>
+              <button
+                type="button"
+                onClick={() => { setSent(false); setEmail(""); }}
+                className="text-sm text-[#b49b82] hover:text-[#4a4037] transition-colors"
+              >
+                Use a different email
+              </button>
+            </div>
+          ) : (
+            <form onSubmit={handleSubmit} className="space-y-6">
               {error && (
-                <div className="p-4 bg-red-50 border border-red-200 rounded-lg text-red-700 text-sm">
+                <div className="p-4 bg-red-50 border border-red-200 rounded-lg text-red-700 text-sm" role="alert">
                   {error}
                 </div>
               )}
 
-              {resetMessage && (
-                <div className="p-4 bg-green-50 border border-green-200 rounded-lg text-green-700 text-sm">
-                  {resetMessage}
-                </div>
-              )}
-
               <div>
-                <label htmlFor="password" className="block text-sm font-medium text-[#4a4037] mb-2">
-                  Admin Password
+                <label htmlFor="email" className="block text-sm font-medium text-[#4a4037] mb-2">
+                  Admin Email
                 </label>
-                <div className="relative">
-                  <input
-                    id="password"
-                    type={showPassword ? "text" : "password"}
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    className="w-full px-4 py-3 pr-12 border border-[#d4b896]/30 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#b49b82] focus:border-transparent bg-[#faf8f5] text-[#4a4037] placeholder-[#6b5d4f]/60"
-                    placeholder="Enter your password"
-                    autoComplete="current-password"
-                    required
-                    disabled={loading}
-                  />
-                  <button
-                    type="button"
-                    onClick={() => setShowPassword(!showPassword)}
-                    className="absolute right-3 top-1/2 -translate-y-1/2 p-1 text-[#6b5d4f] hover:text-[#4a4037] focus:outline-none focus:ring-2 focus:ring-[#b49b82] focus:ring-offset-2 rounded transition-colors"
-                    aria-label={showPassword ? "Hide password" : "Show password"}
-                    disabled={loading}
-                  >
-                    {showPassword ? (
-                      <EyeOff className="h-5 w-5" />
-                    ) : (
-                      <Eye className="h-5 w-5" />
-                    )}
-                  </button>
-                </div>
-              </div>
-
-              <div className="flex items-center justify-between">
-                <label className="flex items-center text-sm text-[#4a4037]">
-                  <input
-                    type="checkbox"
-                    checked={rememberMe}
-                    onChange={(e) => setRememberMe(e.target.checked)}
-                    className="rounded border-[#d4b896] text-[#b49b82] focus:ring-[#b49b82] mr-2"
-                    disabled={loading}
-                  />
-                  Remember me
-                </label>
-
-                <button
-                  type="button"
-                  onClick={() => setShowResetForm(true)}
-                  className="text-sm text-[#b49b82] hover:text-[#4a4037] transition-colors"
+                <input
+                  id="email"
+                  type="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  className="w-full px-4 py-3 border border-[#d4b896]/30 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#b49b82] focus:border-transparent bg-[#faf8f5] text-[#4a4037]"
+                  placeholder="you@example.com"
+                  autoComplete="email"
+                  required
                   disabled={loading}
-                >
-                  Forgot password?
-                </button>
+                />
+                <p className="mt-2 text-xs text-[#6b5d4f]">We&apos;ll email you a one-time sign-in link. No password needed.</p>
               </div>
 
               <button
                 type="submit"
-                disabled={loading || !password}
+                disabled={loading || !email}
                 className="w-full bg-gradient-to-r from-[#d4b896] to-[#b49b82] text-white py-3 px-4 rounded-lg font-medium hover:from-[#b49b82] hover:to-[#a08770] transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed shadow-lg hover:shadow-xl"
               >
-                {loading ? (
-                  <span className="flex items-center justify-center">
-                    <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" fill="none" viewBox="0 0 24 24">
-                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                      <path className="opacity-75" fill="currentColor" d="m4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                    </svg>
-                    Signing in...
-                  </span>
-                ) : (
-                  'Sign In'
-                )}
+                {loading ? "Sending link..." : "Send sign-in link"}
               </button>
-            </form>
-          ) : (
-            <form onSubmit={handlePasswordReset} className="space-y-6">
-              <div className="text-center mb-6">
-                <h3 className="text-xl font-semibold text-[#4a4037] mb-2">Reset Password</h3>
-                <p className="text-sm text-[#6b5d4f]">Enter your admin email to receive reset instructions</p>
-              </div>
-
-              {resetMessage && (
-                <div className={`p-4 border rounded-lg text-sm ${
-                  resetMessage.includes('error') || resetMessage.includes('failed') 
-                    ? 'bg-red-50 border-red-200 text-red-700' 
-                    : 'bg-green-50 border-green-200 text-green-700'
-                }`}>
-                  {resetMessage}
-                </div>
-              )}
-
-              <div>
-                <label htmlFor="resetEmail" className="block text-sm font-medium text-[#4a4037] mb-2">
-                  Admin Email
-                </label>
-                <input
-                  id="resetEmail"
-                  type="email"
-                  value={resetEmail}
-                  onChange={(e) => setResetEmail(e.target.value)}
-                  className="w-full px-4 py-3 border border-[#d4b896]/30 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#b49b82] focus:border-transparent bg-[#faf8f5] text-[#4a4037]"
-                  required
-                  disabled={resetLoading}
-                />
-              </div>
-
-              <div className="flex space-x-3">
-                <button
-                  type="button"
-                  onClick={() => {
-                    setShowResetForm(false);
-                    setResetMessage('');
-                  }}
-                  className="flex-1 px-4 py-3 border border-[#d4b896] text-[#4a4037] rounded-lg hover:bg-[#faf8f5] transition-colors"
-                  disabled={resetLoading}
-                >
-                  Back to Login
-                </button>
-                <button
-                  type="submit"
-                  disabled={resetLoading || !resetEmail}
-                  className="flex-1 bg-gradient-to-r from-[#d4b896] to-[#b49b82] text-white py-3 px-4 rounded-lg font-medium hover:from-[#b49b82] hover:to-[#a08770] transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
-                >
-                  {resetLoading ? (
-                    <span className="flex items-center justify-center">
-                      <svg className="animate-spin -ml-1 mr-2 h-4 w-4 text-white" fill="none" viewBox="0 0 24 24">
-                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                        <path className="opacity-75" fill="currentColor" d="m4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                      </svg>
-                      Sending...
-                    </span>
-                  ) : (
-                    'Send Reset Link'
-                  )}
-                </button>
-              </div>
             </form>
           )}
 
           <div className="mt-6 pt-6 border-t border-[#f5f2ed] text-center">
             <p className="text-xs text-[#6b5d4f]/70">
-              Admin access for PaproMakeovers booking management
+              Admin access for Papromakeovers booking management
             </p>
           </div>
         </div>
@@ -258,7 +116,7 @@ function AdminLoginForm() {
             href="/"
             className="text-sm text-[#b49b82] hover:text-[#4a4037] transition-colors"
           >
-            ← Back to Website
+            ← Back to website
           </Link>
         </div>
       </div>
@@ -269,15 +127,7 @@ function AdminLoginForm() {
 function LoadingFallback() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-[#faf8f5] to-[#f5f2ed] flex items-center justify-center p-4">
-      <div className="bg-white rounded-2xl shadow-xl p-8 border border-[#f5f2ed] max-w-md w-full text-center">
-        <div className="flex items-center justify-center mb-4">
-          <svg className="animate-spin h-8 w-8 text-[#b49b82]" fill="none" viewBox="0 0 24 24">
-            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-            <path className="opacity-75" fill="currentColor" d="m4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-          </svg>
-        </div>
-        <h2 className="text-lg text-[#4a4037]">Loading...</h2>
-      </div>
+      <div className="text-[#6b5d4f]">Loading…</div>
     </div>
   );
 }

@@ -1,12 +1,11 @@
-import { NextRequest, NextResponse } from "next/server";
+import { NextResponse } from "next/server";
 import { createServerAdminClient } from "@/utils/supabase/server";
-import { verifySession } from "@/lib/auth";
+import { requireAdmin } from "@/lib/admin-auth";
 import type { ServiceRow } from "@/types/service";
 
-// Admin-only endpoint that returns ALL services (including inactive/soft-deleted)
-export async function GET(req: NextRequest) {
-  const cookie = req.cookies.get("admin-session");
-  if (!cookie || !verifySession(cookie.value)) {
+// Admin-only: returns ALL services (including inactive/soft-deleted)
+export async function GET() {
+  if (!(await requireAdmin())) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
   const supabase = createServerAdminClient();

@@ -1,89 +1,113 @@
-import { NextRequest, NextResponse } from 'next/server';
-import { verifySession, getSecurityHeaders } from '@/lib/auth';
+import { createServerClient } from "@supabase/ssr";
+import { NextResponse, type NextRequest } from "next/server";
 
-// Define routes that require authentication
-const protectedRoutes = ['/admin'];
-const authRoutes = ['/admin/login', '/admin/reset-password'];
+function securityHeaders(): Record<string, string> {
+  const isProduction = process.env.NODE_ENV === "production";
+  const csp = [
+    "default-src 'self'",
+    "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://vercel.live https://va.vercel-scripts.com https://vitals.vercel-insights.com",
+    "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
+    "font-src 'self' https://fonts.gstatic.com https://fonts.googleapis.com data:",
+    "img-src 'self' data: blob: https:",
+    "connect-src 'self' https://vercel.live https://va.vercel-scripts.com https://vitals.vercel-insights.com https://eymlpuygdeqeyoynfjxg.supabase.co wss://eymlpuygdeqeyoynfjxg.supabase.co",
+    "object-src 'none'",
+    "base-uri 'self'",
+    "form-action 'self'",
+    "frame-ancestors 'none'",
+    ...(isProduction ? ["upgrade-insecure-requests"] : []),
+  ].join("; ");
+  const headers: Record<string, string> = {
+    "Content-Security-Policy": csp,
+    "X-Content-Type-Options": "nosniff",
+    "X-Frame-Options": "DENY",
+    "Referrer-Policy": "strict-origin-when-cross-origin",
+    "Permissions-Policy": "camera=(), microphone=(), geolocation=(), payment=()",
+  };
+  if (isProduction) {
+    headers["Strict-Transport-Security"] = "max-age=31536000; includeSubDomains; preload";
+  }
+  return headers;
+}
 
-export function middleware(request: NextRequest) {
+export async function middleware(request: NextRequest) {
+  let supabaseResponse = NextResponse.next({ request });
+
+  const supabase = createServerClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+    {
+      cookies: {
+        getAll() {
+          return request.cookies.getAll();
+        },
+        setAll(cookiesToSet) {
+          cookiesToSet.forEach(({ name, value }) => request.cookies.set(name, value));
+          supabaseResponse = NextResponse.next({ request });
+          cookiesToSet.forEach(({ name, value, options }) =>
+            supabaseResponse.cookies.set(name, value, options),
+          );
+        },
+      },
+    },
+  );
+
+  // IMPORTANT: nothing between createServerClient and getUser().
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
   const { pathname } = request.nextUrl;
-  
-  // Apply security headers to all responses
-  const response = NextResponse.next();
-  const headers = getSecurityHeaders();
-  
-  Object.entries(headers).forEach(([key, value]) => {
-    response.headers.set(key, value);
-  });
+  const isAdminArea = pathname.startsWith("/admin") && pathname !== "/admin/login";
+  const isLoginPage = pathname === "/admin/login";
 
-  // Check if this is a protected admin route
-  const isProtectedRoute = protectedRoutes.some(route => pathname.startsWith(route));
-  const isAuthRoute = authRoutes.some(route => pathname.startsWith(route));
-  
-  if (isProtectedRoute && !isAuthRoute) {
-    // Get session token from cookie
-    const sessionCookie = request.cookies.get('admin-session');
-    
-    if (!sessionCookie) {
-      // No session cookie, redirect to login
-      const loginUrl = new URL('/admin/login', request.url);
-      loginUrl.searchParams.set('redirect', pathname);
-      return NextResponse.redirect(loginUrl);
+  if (isAdminArea) {
+    if (!user) {
+      const url = request.nextUrl.clone();
+      url.pathname = "/admin/login";
+      url.searchParams.set("redirect", pathname);
+      return NextResponse.redirect(url);
     }
-    
-    // Verify session token
-    const sessionData = verifySession(sessionCookie.value);
-    
-    if (!sessionData) {
-      // Invalid session, clear cookie and redirect to login
-      const loginUrl = new URL('/admin/login', request.url);
-      loginUrl.searchParams.set('redirect', pathname);
-      loginUrl.searchParams.set('expired', '1');
-      
-      const redirectResponse = NextResponse.redirect(loginUrl);
-      redirectResponse.cookies.delete('admin-session');
-      
-      // Apply security headers to redirect response
-      Object.entries(headers).forEach(([key, value]) => {
-        redirectResponse.headers.set(key, value);
-      });
-      
-      return redirectResponse;
-    }
-    
-    // Session is valid, add user data to request headers for use in components
-    response.headers.set('X-Admin-Email', sessionData.email);
-    response.headers.set('X-Admin-Login-Time', sessionData.loginTime.toString());
-  }
-  
-  // If user is already authenticated and trying to access auth routes, redirect to admin
-  if (isAuthRoute && pathname !== '/admin/reset-password') {
-    const sessionCookie = request.cookies.get('admin-session');
-    
-    if (sessionCookie) {
-      const sessionData = verifySession(sessionCookie.value);
-      
-      if (sessionData) {
-        // User is already logged in, redirect to admin panel
-        return NextResponse.redirect(new URL('/admin', request.url));
-      }
+
+    // Must also be in admin_users
+    const { data: adminRow } = await supabase
+      .from("admin_users")
+      .select("user_id")
+      .eq("user_id", user.id)
+      .maybeSingle();
+
+    if (!adminRow) {
+      const url = request.nextUrl.clone();
+      url.pathname = "/admin/login";
+      url.searchParams.set("error", "not-admin");
+      return NextResponse.redirect(url);
     }
   }
-  
-  return response;
+
+  if (isLoginPage && user) {
+    // Already signed in and admin? Send to dashboard. Otherwise stay on login
+    // so they can sign out via link if they land here as a non-admin.
+    const { data: adminRow } = await supabase
+      .from("admin_users")
+      .select("user_id")
+      .eq("user_id", user.id)
+      .maybeSingle();
+    if (adminRow) {
+      const url = request.nextUrl.clone();
+      url.pathname = "/admin";
+      return NextResponse.redirect(url);
+    }
+  }
+
+  // Apply security headers to the final response
+  for (const [key, value] of Object.entries(securityHeaders())) {
+    supabaseResponse.headers.set(key, value);
+  }
+
+  return supabaseResponse;
 }
 
 export const config = {
-  runtime: 'nodejs',
   matcher: [
-    /*
-     * Match all request paths except for the ones starting with:
-     * - api (API routes that handle their own auth)
-     * - _next/static (static files)
-     * - _next/image (image optimization files)
-     * - favicon.ico (favicon file)
-     * - public files (public folder)
-     */
-    '/((?!api|_next/static|_next/image|favicon.ico|.*\\.png$|.*\\.jpg$|.*\\.jpeg$|.*\\.gif$|.*\\.svg$).*)',
+    "/((?!_next/static|_next/image|favicon.ico|favicon.svg|icon.svg|.*\\.png$|.*\\.jpg$|.*\\.jpeg$|.*\\.gif$|.*\\.svg$).*)",
   ],
 };

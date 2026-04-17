@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import AdminCalendar from "@/components/AdminCalendar";
 import TimeSlotManager from "@/components/TimeSlotManager";
 import ServicesManager from "@/components/admin/ServicesManager";
+import { createClient } from "@/utils/supabase/client";
 
 type AdminTab = "availability" | "services";
 
@@ -20,6 +21,21 @@ export default function AdminPage() {
   const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
   type AdminBooking = { id: number; name: string; service: string; date: string; time: string; status: string };
   const [bookings, setBookings] = useState<AdminBooking[]>([]);
+  const [userEmail, setUserEmail] = useState<string>("");
+
+  useEffect(() => {
+    (async () => {
+      const supabase = createClient();
+      const { data } = await supabase.auth.getUser();
+      setUserEmail(data.user?.email ?? "");
+    })();
+  }, []);
+
+  async function handleSignOut() {
+    const supabase = createClient();
+    await supabase.auth.signOut();
+    window.location.href = "/";
+  }
 
   useEffect(() => {
     const monthStr = currentMonth.toISOString().slice(0, 7);
@@ -116,7 +132,7 @@ export default function AdminPage() {
   return (
     <div className="min-h-screen bg-[#faf8f5] text-[#4a4037]">
       <div className="max-w-[1400px] mx-auto px-5 py-10">
-        <div className="flex justify-between items-start mb-6">
+        <div className="flex flex-wrap justify-between items-start gap-4 mb-6">
           <div>
             <h1 className="text-3xl font-bold text-[#4a4037] mb-2">Admin Dashboard</h1>
             <p className="text-[#6b5d4f]">
@@ -126,11 +142,30 @@ export default function AdminPage() {
             </p>
           </div>
 
-          {tab === "availability" && hasUnsavedChanges && (
-            <div className="bg-yellow-50 border border-yellow-200 rounded px-3 py-2 text-sm text-yellow-800">
-              ⚠️ You have unsaved changes
+          <div className="flex items-center gap-3">
+            {tab === "availability" && hasUnsavedChanges && (
+              <div className="bg-yellow-50 border border-yellow-200 rounded px-3 py-2 text-sm text-yellow-800">
+                ⚠️ You have unsaved changes
+              </div>
+            )}
+            <div className="text-right">
+              {userEmail && (
+                <div className="text-xs text-[#6b5d4f]">Signed in as</div>
+              )}
+              <div className="flex items-center gap-3">
+                {userEmail && (
+                  <span className="text-sm font-medium text-[#4a4037]">{userEmail}</span>
+                )}
+                <button
+                  type="button"
+                  onClick={handleSignOut}
+                  className="text-sm px-3 py-1.5 rounded border border-[#d4b896] text-[#8b7355] hover:bg-[#faf8f5] transition-colors"
+                >
+                  Sign out
+                </button>
+              </div>
             </div>
-          )}
+          </div>
         </div>
 
         <div className="flex items-center gap-2 border-b border-[#e5ddd1] mb-8">

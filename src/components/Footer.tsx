@@ -50,19 +50,11 @@ export default function Footer() {
             Privacy Policy
           </a>
           <span className="text-[#f5f2ed]/40">•</span>
-          <a 
-            href="/terms" 
+          <a
+            href="/terms"
             className="text-[#f5f2ed]/70 hover:text-[#d4b896] transition-colors"
           >
             Terms of Service
-          </a>
-          <span className="text-[#f5f2ed]/40">•</span>
-          <a 
-            href="/admin/login" 
-            className="text-[#f5f2ed]/40 hover:text-[#d4b896] text-xs transition-colors"
-            title="Admin Access"
-          >
-            Admin
           </a>
         </div>
       </div>

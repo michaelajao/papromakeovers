@@ -1,13 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient, createServerAdminClient } from "@/utils/supabase/server";
-import { verifySession } from "@/lib/auth";
+import { requireAdmin } from "@/lib/admin-auth";
 import type { ServicePatch, ServiceInput, ServiceRow } from "@/types/service";
-
-function requireAdmin(req: NextRequest) {
-  const cookie = req.cookies.get("admin-session");
-  if (!cookie) return false;
-  return !!verifySession(cookie.value);
-}
 
 export async function GET() {
   const supabase = await createClient();
@@ -21,7 +15,7 @@ export async function GET() {
 }
 
 export async function POST(req: NextRequest) {
-  if (!requireAdmin(req)) {
+  if (!(await requireAdmin())) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
   const body = (await req.json()) as ServiceInput;
@@ -48,7 +42,7 @@ export async function POST(req: NextRequest) {
 }
 
 export async function PATCH(req: NextRequest) {
-  if (!requireAdmin(req)) {
+  if (!(await requireAdmin())) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
   const body = (await req.json()) as { updates: ServicePatch[] };
@@ -73,7 +67,7 @@ export async function PATCH(req: NextRequest) {
 }
 
 export async function DELETE(req: NextRequest) {
-  if (!requireAdmin(req)) {
+  if (!(await requireAdmin())) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
   const { searchParams } = new URL(req.url);
