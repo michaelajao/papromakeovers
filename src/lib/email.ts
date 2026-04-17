@@ -1,11 +1,11 @@
 import { Resend } from 'resend';
 import { getBookingConfirmationEmailTemplate } from './email-templates';
 
-// Map service slugs to display names
+// Fallback display names if DB lookup failed.
 function getServiceDisplayName(serviceSlug: string): string {
   const serviceMap: Record<string, string> = {
     'studio-makeup': 'Studio makeup',
-    'party-guest-makeup': 'Party guest makeup', 
+    'party-guest-makeup': 'Party guest makeup',
     'photoshoot-glam': 'Photoshoot glam',
     'bridesmaids-bookings': 'Bridesmaids bookings',
     'prom-glam': 'Graduation & Prom Glam',
@@ -15,9 +15,9 @@ function getServiceDisplayName(serviceSlug: string): string {
     'bridal-civil': 'Civil wedding',
     'bridal-traditional': 'Traditional wedding',
     'bridal-white': 'White wedding',
-    'bridal-trial': 'Bridal trial'
+    'bridal-combination': 'Complete Bridal Package',
+    'bridal-trial': 'Bridal trial',
   };
-  
   return serviceMap[serviceSlug] || serviceSlug;
 }
 
@@ -26,6 +26,8 @@ export async function sendBookingEmail(payload: {
   email: string;
   phone: string;
   service: string;
+  serviceTitle?: string;
+  priceFrom?: number | null;
   date: string;
   time: string;
   notes?: string;
@@ -37,24 +39,24 @@ export async function sendBookingEmail(payload: {
   }
 
   const resend = new Resend(resendApiKey);
-  
+
   const formattedDate = new Date(payload.date).toLocaleDateString('en-GB', {
     weekday: 'long',
     year: 'numeric',
     month: 'long',
-    day: 'numeric'
+    day: 'numeric',
   });
-  
-  // Get display name for service
-  const serviceDisplayName = getServiceDisplayName(payload.service);
-  
+
+  const serviceDisplayName = payload.serviceTitle || getServiceDisplayName(payload.service);
+
   const emailTemplate = getBookingConfirmationEmailTemplate(
     payload.name,
     payload.email,
     payload.phone,
     serviceDisplayName,
     formattedDate,
-    payload.time
+    payload.time,
+    payload.priceFrom ?? null,
   );
 
   try {
@@ -79,5 +81,3 @@ export async function sendBookingEmail(payload: {
     throw error;
   }
 }
-
-

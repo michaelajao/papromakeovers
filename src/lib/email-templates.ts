@@ -86,10 +86,18 @@ export function getBookingConfirmationEmailTemplate(
   customerName: string,
   customerEmail: string,
   customerPhone: string,
-  service: string, 
-  date: string, 
-  time: string
+  service: string,
+  date: string,
+  time: string,
+  priceFrom: number | null = null
 ) {
+  const priceLabel = priceFrom != null
+    ? new Intl.NumberFormat('en-GB', { style: 'currency', currency: 'GBP', maximumFractionDigits: 0 }).format(priceFrom)
+    : null;
+  const priceRow = priceLabel
+    ? `<tr><td style="padding: 8px 0; font-weight: bold;">Starting price:</td><td style="padding: 8px 0;">From ${priceLabel} <span style="color:#6b5d4f; font-size:12px;">(final quote confirmed after booking)</span></td></tr>`
+    : '';
+  const priceText = priceLabel ? `Starting price: From ${priceLabel} (final quote confirmed after booking)\n` : '';
   return {
     subject: `Booking Confirmation - ${service} on ${date}`,
     html: `
@@ -120,6 +128,7 @@ export function getBookingConfirmationEmailTemplate(
                 <td style="padding: 8px 0; font-weight: bold;">Time:</td>
                 <td style="padding: 8px 0;">${time}</td>
               </tr>
+              ${priceRow}
               <tr>
                 <td style="padding: 8px 0; font-weight: bold;">Email:</td>
                 <td style="padding: 8px 0;">${customerEmail}</td>
@@ -167,7 +176,7 @@ BOOKING DETAILS:
 Service: ${service}
 Date: ${date}
 Time: ${time}
-Email: ${customerEmail}
+${priceText}Email: ${customerEmail}
 Phone: ${customerPhone}
 
 WHAT HAPPENS NEXT:

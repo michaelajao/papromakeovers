@@ -1,0 +1,344 @@
+- generic [active] [ref=e1]:
+  - generic [ref=e2]:
+    - banner [ref=e3]:
+      - link "Skip to content" [ref=e4] [cursor=pointer]:
+        - /url: "#main"
+      - navigation [ref=e5]:
+        - link "Papromakeovers" [ref=e6] [cursor=pointer]:
+          - /url: /
+        - list [ref=e7]:
+          - listitem [ref=e8]:
+            - link "Home" [ref=e9] [cursor=pointer]:
+              - /url: /#home
+          - listitem [ref=e10]:
+            - link "About" [ref=e11] [cursor=pointer]:
+              - /url: /#about
+          - listitem [ref=e12]:
+            - link "Services" [ref=e13] [cursor=pointer]:
+              - /url: /services
+          - listitem [ref=e14]:
+            - link "Gallery" [ref=e15] [cursor=pointer]:
+              - /url: /#gallery
+          - listitem [ref=e16]:
+            - link "Reviews" [ref=e17] [cursor=pointer]:
+              - /url: /#testimonials
+          - listitem [ref=e18]:
+            - link "FAQ" [ref=e19] [cursor=pointer]:
+              - /url: /#faq
+        - link "Book Now" [ref=e21] [cursor=pointer]:
+          - /url: /#booking
+    - main [ref=e22]:
+      - generic [ref=e24]:
+        - generic [ref=e25]: Coventry · Mobile across the UK
+        - heading "Transform Your Beauty" [level=1] [ref=e26]
+        - paragraph [ref=e27]: Professional makeup artistry for every occasion. From bridal to special events, we create stunning looks that make you feel confident and beautiful.
+        - generic [ref=e28]:
+          - link "Book Appointment" [ref=e29] [cursor=pointer]:
+            - /url: "#booking"
+          - link "View Services" [ref=e30] [cursor=pointer]:
+            - /url: "#services"
+      - generic [ref=e32]:
+        - generic [ref=e33]:
+          - generic [ref=e34]: Our Story
+          - heading "About Papromakeovers" [level=2] [ref=e35]
+          - paragraph [ref=e37]: With over 8 years of experience in the beauty industry, we specialize in creating stunning makeup looks for all occasions. Our passion is helping you look and feel your absolute best.
+          - paragraph [ref=e38]: Whether it's your wedding day, a special event, or you simply want to treat yourself, we use only the finest products and techniques to ensure a flawless finish that lasts all day.
+          - paragraph [ref=e39]: Based in the UK, we offer both studio appointments and mobile services to bring the luxury experience directly to you.
+        - generic [ref=e41]:
+          - img "Professional makeup artist portrait – Papromakeovers founder" [ref=e43]
+          - generic [ref=e44]: 8+ Years Experience
+      - generic [ref=e46]:
+        - generic [ref=e47]:
+          - generic [ref=e48]: Services & Pricing
+          - heading "Our Services" [level=2] [ref=e49]
+          - paragraph [ref=e51]: Professional makeup artistry tailored to your unique style and occasion.
+        - generic [ref=e52]:
+          - heading "Signature Services" [level=3] [ref=e54]
+          - generic [ref=e56]:
+            - generic [ref=e57]:
+              - generic [ref=e58]:
+                - generic [ref=e59]: Signature
+                - heading "Studio Makeup" [level=3] [ref=e60]
+                - generic [ref=e61]
+                - paragraph [ref=e64]: Enjoy a personalised makeover in our studio, created to suit your unique features and preferences. Ideal if you'd love to visit our space for a flawless look for any occasion.
+              - link "Book This Service" [ref=e65] [cursor=pointer]:
+                - /url: /?service=studio-makeup#booking
+                - generic [ref=e66]: Book This Service
+                - img [ref=e67]
+            - generic [ref=e69]:
+              - generic [ref=e70]:
+                - generic [ref=e71]: Signature
+                - heading "Photoshoot Glam" [level=3] [ref=e72]
+                - generic [ref=e73]
+                - paragraph [ref=e76]: A detailed, camera-ready look that enhances your natural beauty under studio lights. Great for pre-wedding shoots, birthdays, headshots or brand photography.
+              - link "Book This Service" [ref=e77] [cursor=pointer]:
+                - /url: /?service=photoshoot-glam#booking
+                - generic [ref=e78]: Book This Service
+                - img [ref=e79]
+            - generic [ref=e81]:
+              - generic [ref=e82]:
+                - generic [ref=e83]: Signature
+                - heading "Graduation & Prom Glam" [level=3] [ref=e84]
+                - generic [ref=e85]
+                - paragraph [ref=e88]: A youthful, radiant and stylish look for graduation ceremonies and prom night — soft glam or bold drama to match your vibe and outfit.
+              - link "Book This Service" [ref=e89] [cursor=pointer]:
+                - /url: /?service=prom-glam#booking
+                - generic [ref=e90]: Book This Service
+                - img [ref=e91]
+            - generic [ref=e93]:
+              - generic [ref=e94]:
+                - generic [ref=e95]: Signature
+                - heading "Gele Tying" [level=3] [ref=e96]
+                - generic [ref=e97]
+                - paragraph [ref=e100]: Professional gele tying and styling for Nigerian traditional ceremonies, weddings, and cultural events. Authentic techniques with modern flair.
+              - link "Book This Service" [ref=e101] [cursor=pointer]:
+                - /url: /?service=gele-tying#booking
+                - generic [ref=e102]: Book This Service
+                - img [ref=e103]
+        - generic [ref=e105]:
+          - heading "Group Services" [level=3] [ref=e107]
+          - generic [ref=e109]:
+            - generic [ref=e110]:
+              - generic [ref=e111]:
+                - generic [ref=e112]: Group
+                - heading "Party Guest Makeup" [level=3] [ref=e113]
+                - generic [ref=e114]
+                - paragraph [ref=e117]: Perfect for weddings, birthdays and celebrations. Ideal for mother of the bride/groom and siblings. This is a group booking (minimum of 3 people).
+              - link "Book This Service" [ref=e118] [cursor=pointer]:
+                - /url: /?service=party-guest-makeup#booking
+                - generic [ref=e119]: Book This Service
+                - img [ref=e120]
+            - generic [ref=e122]:
+              - generic [ref=e123]:
+                - generic [ref=e124]: Group
+                - heading "Bridesmaids Bookings" [level=3] [ref=e125]
+                - generic [ref=e126]
+                - paragraph [ref=e129]: Cohesive, elegant looks for the bridal party. Long-lasting and picture-perfect for a full day of celebration. Group booking (minimum of 3 people).
+              - link "Book This Service" [ref=e130] [cursor=pointer]:
+                - /url: /?service=bridesmaids-bookings#booking
+                - generic [ref=e131]: Book This Service
+                - img [ref=e132]
+            - generic [ref=e134]:
+              - generic [ref=e135]:
+                - generic [ref=e136]: Group
+                - heading "Travel Makeup Service" [level=3] [ref=e137]
+                - generic [ref=e138]
+                - paragraph [ref=e141]: "Bringing the glam to your home, hotel or venue. Note: additional travel fees apply based on location."
+              - link "Book This Service" [ref=e142] [cursor=pointer]:
+                - /url: /?service=travel-makeup#booking
+                - generic [ref=e143]: Book This Service
+                - img [ref=e144]
+        - generic [ref=e146]:
+          - heading "Bridal Services" [level=3] [ref=e148]
+          - generic [ref=e150]:
+            - generic [ref=e151]:
+              - generic [ref=e152]:
+                - generic [ref=e153]: Bridal
+                - heading "Civil Wedding" [level=3] [ref=e154]
+                - generic [ref=e155]
+                - paragraph [ref=e158]: Elegant and refined makeup for your intimate civil ceremony. Timeless beauty that photographs beautifully.
+              - link "Book This Service" [ref=e159] [cursor=pointer]:
+                - /url: /?service=bridal-civil#booking
+                - generic [ref=e160]: Book This Service
+                - img [ref=e161]
+            - generic [ref=e163]:
+              - generic [ref=e164]:
+                - generic [ref=e165]: Bridal
+                - heading "Traditional Wedding" [level=3] [ref=e166]
+                - generic [ref=e167]
+                - paragraph [ref=e170]: Rich, cultural makeup that honours your heritage while enhancing your natural beauty for traditional ceremonies.
+              - link "Book This Service" [ref=e171] [cursor=pointer]:
+                - /url: /?service=bridal-traditional#booking
+                - generic [ref=e172]: Book This Service
+                - img [ref=e173]
+            - generic [ref=e175]:
+              - generic [ref=e176]:
+                - generic [ref=e177]: Bridal
+                - heading "White Wedding" [level=3] [ref=e178]
+                - generic [ref=e179]
+                - paragraph [ref=e182]: Classic bridal glam with long-lasting coverage perfect for your white wedding celebration and photos.
+              - link "Book This Service" [ref=e183] [cursor=pointer]:
+                - /url: /?service=bridal-white#booking
+                - generic [ref=e184]: Book This Service
+                - img [ref=e185]
+            - generic [ref=e187]:
+              - generic [ref=e188]:
+                - generic [ref=e189]: Bridal
+                - heading "Complete Bridal Package" [level=3] [ref=e190]
+                - generic [ref=e191]
+                - paragraph [ref=e194]: The ultimate bridal experience combining multiple ceremonies with coordinated looks throughout your celebration.
+              - link "Book This Service" [ref=e195] [cursor=pointer]:
+                - /url: /?service=bridal-combination#booking
+                - generic [ref=e196]: Book This Service
+                - img [ref=e197]
+        - generic [ref=e199]:
+          - heading "Education" [level=3] [ref=e201]
+          - generic [ref=e204]:
+            - generic [ref=e205]:
+              - generic [ref=e206]: Education
+              - heading "DIY Makeup Masterclass" [level=3] [ref=e207]
+              - generic [ref=e208]:
+                - generic [ref=e209]: From
+                - generic [ref=e210]: £120
+              - paragraph [ref=e211]: A personalised lesson covering everyday basics or glam techniques — tailored to your level so you feel confident doing your own makeup.
+            - link "Book This Service" [ref=e212] [cursor=pointer]:
+              - /url: /?service=diy-makeup-class#booking
+              - generic [ref=e213]: Book This Service
+              - img [ref=e214]
+      - generic [ref=e217]:
+        - generic [ref=e218]:
+          - generic [ref=e219]: Portfolio
+          - heading "Our Work" [level=2] [ref=e220]
+        - generic [ref=e222]:
+          - img "Papromakeovers beauty 1 look" [ref=e224]
+          - img "Papromakeovers couple 1 look" [ref=e226]
+          - img "Papromakeovers couple 2 look" [ref=e228]
+          - img "Papromakeovers fashion 1 look" [ref=e230]
+          - img "Papromakeovers 0050 look" [ref=e232]
+          - img "Papromakeovers 2164 look" [ref=e234]
+          - img "Papromakeovers 2165 look" [ref=e236]
+          - img "Papromakeovers 2166 look" [ref=e238]
+          - img "Papromakeovers 2168 look" [ref=e240]
+          - img "Papromakeovers 2172 look" [ref=e242]
+          - img "Papromakeovers 2174 look" [ref=e244]
+          - img "Papromakeovers 2177 look" [ref=e246]
+          - img "Papromakeovers 2179 look" [ref=e248]
+          - img "Papromakeovers 2180 look" [ref=e250]
+        - link "Follow us on Instagram" [ref=e252] [cursor=pointer]:
+          - /url: https://www.instagram.com/papromakeovers/
+          - img [ref=e253]
+          - generic [ref=e255]: Follow us on Instagram
+      - generic [ref=e257]:
+        - generic [ref=e258]:
+          - generic [ref=e259]: Questions
+          - heading "Frequently Asked" [level=2] [ref=e260]
+        - generic [ref=e262]:
+          - group [ref=e263]:
+            - generic "How far in advance should I book?" [ref=e264] [cursor=pointer]:
+              - generic [ref=e265]: How far in advance should I book?
+              - img [ref=e266]
+          - group [ref=e268]:
+            - generic "Do you travel to the client's location?" [ref=e269] [cursor=pointer]:
+              - generic [ref=e270]: Do you travel to the client's location?
+              - img [ref=e271]
+          - group [ref=e273]:
+            - generic "Is a deposit required?" [ref=e274] [cursor=pointer]:
+              - generic [ref=e275]: Is a deposit required?
+              - img [ref=e276]
+          - group [ref=e278]:
+            - generic "What products do you use?" [ref=e279] [cursor=pointer]:
+              - generic [ref=e280]: What products do you use?
+              - img [ref=e281]
+          - group [ref=e283]:
+            - generic "Can I request a trial before my wedding?" [ref=e284] [cursor=pointer]:
+              - generic [ref=e285]: Can I request a trial before my wedding?
+              - img [ref=e286]
+          - group [ref=e288]:
+            - generic "What's your cancellation policy?" [ref=e289] [cursor=pointer]:
+              - generic [ref=e290]: What's your cancellation policy?
+              - img [ref=e291]
+      - generic [ref=e294]:
+        - generic [ref=e295]: Reserve Your Date
+        - heading "Book Your Appointment" [level=2] [ref=e296]
+        - paragraph [ref=e297]: Ready to transform your look? Submit a booking request and we'll confirm within 24 hours.
+        - generic [ref=e299]:
+          - generic [ref=e300]:
+            - generic [ref=e301]: Select Service
+            - combobox "Select Service" [ref=e302]:
+              - option "Choose a service..." [selected]
+          - generic [ref=e303]:
+            - generic [ref=e304]: Select Date
+            - button "Select Date" [ref=e305]:
+              - generic [ref=e306]:
+                - img [ref=e307]
+                - generic [ref=e309]: Choose a date
+              - img [ref=e310]
+          - generic [ref=e312]:
+            - generic [ref=e313]: Available Time Slots
+            - generic [ref=e315]: Select a date to see available times.
+          - generic [ref=e316]:
+            - generic [ref=e317]:
+              - generic [ref=e318]: Full Name
+              - textbox "Full Name" [ref=e319]
+            - generic [ref=e320]:
+              - generic [ref=e321]: Email
+              - textbox "Email" [ref=e322]
+            - generic [ref=e323]:
+              - generic [ref=e324]: Phone Number
+              - textbox "Phone Number" [ref=e325]
+            - generic [ref=e326]:
+              - generic [ref=e327]: Special Requests (Optional)
+              - textbox "Special Requests (Optional)" [ref=e328]:
+                - /placeholder: Any specific requirements or questions...
+          - button "Confirm Booking" [ref=e329]
+    - contentinfo [ref=e330]:
+      - generic [ref=e331]:
+        - generic [ref=e332]:
+          - heading "Contact Us" [level=3] [ref=e333]
+          - paragraph [ref=e334]: 📍 Coventry, United Kingdom
+          - paragraph [ref=e335]: 📞 +447368590564
+          - paragraph [ref=e336]: ✉️ papromakeoversstudio@gmail.com
+          - link "Instagram" [ref=e338] [cursor=pointer]:
+            - /url: https://www.instagram.com/papromakeovers/
+            - img [ref=e339]
+        - generic [ref=e341]:
+          - heading "Services" [level=3] [ref=e342]
+          - paragraph [ref=e343]:
+            - link "Studio makeup" [ref=e344] [cursor=pointer]:
+              - /url: /services
+          - paragraph [ref=e345]:
+            - link "Party guest makeup" [ref=e346] [cursor=pointer]:
+              - /url: /services
+          - paragraph [ref=e347]:
+            - link "Photoshoot glam" [ref=e348] [cursor=pointer]:
+              - /url: /services
+          - paragraph [ref=e349]:
+            - link "Bridesmaids bookings" [ref=e350] [cursor=pointer]:
+              - /url: /services
+          - paragraph [ref=e351]:
+            - link "Graduation & Prom Glam" [ref=e352] [cursor=pointer]:
+              - /url: /services
+          - paragraph [ref=e353]:
+            - link "Travel to client location makeup service" [ref=e354] [cursor=pointer]:
+              - /url: /services
+          - paragraph [ref=e355]:
+            - link "DIY one on one makeup class" [ref=e356] [cursor=pointer]:
+              - /url: /services
+          - paragraph [ref=e357]:
+            - link "Gele tying" [ref=e358] [cursor=pointer]:
+              - /url: /services
+          - paragraph [ref=e359]:
+            - link "View all services & pricing →" [ref=e360] [cursor=pointer]:
+              - /url: /services
+        - generic [ref=e361]:
+          - heading "Business Hours" [level=3] [ref=e362]
+          - paragraph [ref=e363]: "Monday - Friday: 9:00 AM - 8:00 PM"
+          - paragraph [ref=e364]: "Saturday: 8:00 AM - 9:00 PM"
+          - paragraph [ref=e365]: "Sunday: 10:00 AM - 6:00 PM"
+          - paragraph [ref=e366]: Appointments available outside hours
+        - generic [ref=e367]:
+          - heading "About" [level=3] [ref=e368]
+          - paragraph [ref=e369]: Professional makeup artist serving the UK with 8+ years of experience. Specializing in bridal, special events, and photoshoot makeup.
+      - generic [ref=e370]:
+        - text: © 2025 Papromakeovers. All rights reserved. | Registered in England & Wales
+        - generic [ref=e371]:
+          - link "Privacy Policy" [ref=e372] [cursor=pointer]:
+            - /url: /privacy
+          - generic [ref=e373]: •
+          - link "Terms of Service" [ref=e374] [cursor=pointer]:
+            - /url: /terms
+          - generic [ref=e375]: •
+          - link "Admin" [ref=e376] [cursor=pointer]:
+            - /url: /admin/login
+  - generic [ref=e381] [cursor=pointer]:
+    - button "Open Next.js Dev Tools" [ref=e382]:
+      - img [ref=e383]
+    - generic [ref=e386]:
+      - button "Open issues overlay" [ref=e387]:
+        - generic [ref=e388]:
+          - generic [ref=e389]: "0"
+          - generic [ref=e390]: "1"
+        - generic [ref=e391]: Issue
+      - button "Collapse issues badge" [ref=e392]:
+        - img [ref=e393]
+  - alert [ref=e395]

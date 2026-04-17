@@ -13,9 +13,16 @@
   
   "icons": [
     {
-      "src": "/favicon.ico",
+      "src": "/favicon.svg",
       "sizes": "any",
-      "type": "image/x-icon"
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
+    {
+      "src": "/icon.svg",
+      "sizes": "180x180",
+      "type": "image/svg+xml",
+      "purpose": "maskable"
     }
   ],
 
@@ -27,8 +34,9 @@
       "url": "/#booking",
       "icons": [
         {
-          "src": "/favicon.ico",
-          "sizes": "any"
+          "src": "/favicon.svg",
+          "sizes": "any",
+          "type": "image/svg+xml"
         }
       ]
     },
@@ -39,8 +47,9 @@
       "url": "/#gallery",
       "icons": [
         {
-          "src": "/favicon.ico",
-          "sizes": "any"
+          "src": "/favicon.svg",
+          "sizes": "any",
+          "type": "image/svg+xml"
         }
       ]
     },
@@ -51,8 +60,9 @@
       "url": "/#services", 
       "icons": [
         {
-          "src": "/favicon.ico",
-          "sizes": "any"
+          "src": "/favicon.svg",
+          "sizes": "any",
+          "type": "image/svg+xml"
         }
       ]
     }

@@ -1,3 +1,33 @@
+-- Services: admin-managed list of makeup services shown on the site
+create table if not exists public.services (
+  id bigint generated always as identity primary key,
+  slug text not null unique,
+  title text not null,
+  category text not null,
+  description text,
+  features text[] not null default '{}',
+  price_from numeric(10,2),
+  sort_order int not null default 0,
+  is_active boolean not null default true,
+  created_at timestamp with time zone default now(),
+  updated_at timestamp with time zone default now()
+);
+create index if not exists idx_services_active_sort on public.services(is_active, sort_order);
+
+-- Testimonials: admin-managed social proof
+create table if not exists public.testimonials (
+  id bigint generated always as identity primary key,
+  client_name text not null,
+  quote text not null,
+  rating int not null default 5 check (rating between 1 and 5),
+  service_slug text,
+  is_featured boolean not null default true,
+  sort_order int not null default 0,
+  created_at timestamp with time zone default now(),
+  updated_at timestamp with time zone default now()
+);
+create index if not exists idx_testimonials_featured_sort on public.testimonials(is_featured, sort_order);
+
 -- Availability: per-date list of open time slots (e.g., ["09:00","11:00",...])
 create table if not exists public.availability (
   date date primary key,
@@ -53,19 +83,43 @@ create or replace trigger update_bookings_updated_at
   for each row
   execute function update_updated_at_column();
 
+create or replace trigger update_services_updated_at
+  before update on public.services
+  for each row
+  execute function update_updated_at_column();
+
+create or replace trigger update_testimonials_updated_at
+  before update on public.testimonials
+  for each row
+  execute function update_updated_at_column();
+
 -- RLS policies for production security
 alter table public.availability enable row level security;
 alter table public.bookings enable row level security;
+alter table public.services enable row level security;
+alter table public.testimonials enable row level security;
 
 -- Read availability publicly
 create policy "Public read availability" on public.availability for select using (true);
 
 -- Only service role can modify availability
-create policy "Service role can modify availability" on public.availability 
+create policy "Service role can modify availability" on public.availability
   for all to service_role using (true) with check (true);
 
 -- Bookings policies
-create policy "Service role can manage bookings" on public.bookings 
+create policy "Service role can manage bookings" on public.bookings
+  for all to service_role using (true) with check (true);
+
+-- Services policies: public can read active services; service role manages
+create policy "Public read active services" on public.services
+  for select using (is_active = true);
+create policy "Service role can manage services" on public.services
+  for all to service_role using (true) with check (true);
+
+-- Testimonials policies: public can read featured; service role manages
+create policy "Public read featured testimonials" on public.testimonials
+  for select using (is_featured = true);
+create policy "Service role can manage testimonials" on public.testimonials
   for all to service_role using (true) with check (true);
 
 -- Optional: Allow users to read their own bookings (if implementing user auth later)

@@ -3,11 +3,14 @@
 import { useEffect, useState } from "react";
 import AdminCalendar from "@/components/AdminCalendar";
 import TimeSlotManager from "@/components/TimeSlotManager";
-import { format, parseISO } from "date-fns";
+import ServicesManager from "@/components/admin/ServicesManager";
+
+type AdminTab = "availability" | "services";
 
 type Payload = { month: string; dates: string[]; slotsByDate: Record<string, string[]> };
 
 export default function AdminPage() {
+  const [tab, setTab] = useState<AdminTab>("availability");
   const [currentMonth, setCurrentMonth] = useState<Date>(new Date());
   const [month, setMonth] = useState<string>(new Date().toISOString().slice(0, 7));
   const [dates, setDates] = useState<string[]>([]);
@@ -113,19 +116,47 @@ export default function AdminPage() {
   return (
     <div className="min-h-screen bg-[#faf8f5] text-[#4a4037]">
       <div className="max-w-[1400px] mx-auto px-5 py-10">
-        <div className="flex justify-between items-start mb-8">
+        <div className="flex justify-between items-start mb-6">
           <div>
-            <h1 className="text-3xl font-bold text-[#4a4037] mb-2">Admin: Manage Availability</h1>
-            <p className="text-[#6b5d4f]">Click dates to toggle availability, or click the edit icon to customize time slots</p>
+            <h1 className="text-3xl font-bold text-[#4a4037] mb-2">Admin Dashboard</h1>
+            <p className="text-[#6b5d4f]">
+              {tab === "availability"
+                ? "Click dates to toggle availability, or click the edit icon to customize time slots"
+                : "Manage the services shown on the website and in the booking form."}
+            </p>
           </div>
-          
-          {hasUnsavedChanges && (
+
+          {tab === "availability" && hasUnsavedChanges && (
             <div className="bg-yellow-50 border border-yellow-200 rounded px-3 py-2 text-sm text-yellow-800">
               ⚠️ You have unsaved changes
             </div>
           )}
         </div>
 
+        <div className="flex items-center gap-2 border-b border-[#e5ddd1] mb-8">
+          {([
+            { id: "availability", label: "Availability & Bookings" },
+            { id: "services", label: "Services & Pricing" },
+          ] as { id: AdminTab; label: string }[]).map((t) => (
+            <button
+              key={t.id}
+              type="button"
+              onClick={() => setTab(t.id)}
+              className={`px-4 py-2 text-sm font-medium border-b-2 -mb-px transition-colors ${
+                tab === t.id
+                  ? "border-[#b49b82] text-[#3a322b]"
+                  : "border-transparent text-[#6b5d4f] hover:text-[#3a322b]"
+              }`}
+            >
+              {t.label}
+            </button>
+          ))}
+        </div>
+
+        {tab === "services" && <ServicesManager />}
+
+        {tab === "availability" && (
+        <>
         {/* Controls */}
         <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 mb-8">
           <div className="flex items-center justify-between sm:justify-start">
@@ -298,6 +329,8 @@ export default function AdminPage() {
             onChange={handleSlotUpdate}
             onClose={() => setEditingDate(null)}
           />
+        )}
+        </>
         )}
       </div>
     </div>

@@ -24,8 +24,9 @@ export default function Footer() {
         <div>
           <h3 className="text-[#d4b896] font-semibold mb-2">Services</h3>
           {['Studio makeup','Party guest makeup','Photoshoot glam','Bridesmaids bookings','Graduation & Prom Glam','Travel to client location makeup service','DIY one on one makeup class','Gele tying'].map((s) => (
-            <p key={s}><a href="#services" className="text-[#f5f2ed]/80 hover:text-[#d4b896] transition-colors">{s}</a></p>
+            <p key={s}><a href="/services" className="text-[#f5f2ed]/80 hover:text-[#d4b896] transition-colors">{s}</a></p>
           ))}
+          <p className="mt-2"><a href="/services" className="text-[#d4b896] underline hover:text-white transition-colors text-sm">View all services &amp; pricing →</a></p>
         </div>
         <div>
           <h3 className="text-[#d4b896] font-semibold mb-2">Business Hours</h3>

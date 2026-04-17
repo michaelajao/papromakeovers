@@ -3,14 +3,25 @@
 import { useEffect, useMemo, useState } from "react";
 import { addMonths } from "date-fns";
 import Calendar from "@/components/Calendar";
+import { formatPriceFrom } from "@/lib/price";
+import type { ServiceRow } from "@/types/service";
 
 type AvailabilityResponse = {
-  dates: string[]; // ISO date strings available
-  slotsByDate: Record<string, string[]>; // date -> ["09:00", ...]
+  dates: string[];
+  slotsByDate: Record<string, string[]>;
+};
+
+const CATEGORY_ORDER = ["Signature", "Group", "Bridal", "Education"];
+const CATEGORY_LABELS: Record<string, string> = {
+  Signature: "Signature Services",
+  Group: "Group Services",
+  Bridal: "Bridal Services",
+  Education: "Education",
 };
 
 export default function BookingForm() {
   const [service, setService] = useState("");
+  const [services, setServices] = useState<ServiceRow[]>([]);
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
@@ -20,30 +31,45 @@ export default function BookingForm() {
   const [availability, setAvailability] = useState<AvailabilityResponse | null>(null);
   const [currentMonth, setCurrentMonth] = useState(new Date());
   const [submitting, setSubmitting] = useState(false);
+  const [dateOpen, setDateOpen] = useState(false);
 
   useEffect(() => {
-    // Preselect service from URL query (?service=slug)
-    if (typeof window !== 'undefined') {
+    if (typeof window !== "undefined") {
       const url = new URL(window.location.href);
-      const s = url.searchParams.get('service');
+      const s = url.searchParams.get("service");
       if (s) setService(s);
     }
   }, []);
 
-  // Load availability when month changes
+  useEffect(() => {
+    const controller = new AbortController();
+    (async () => {
+      try {
+        const res = await fetch("/api/services", { signal: controller.signal });
+        if (!res.ok) return;
+        const data = (await res.json()) as { services: ServiceRow[] };
+        setServices(data.services ?? []);
+      } catch {
+        // ignore
+      }
+    })();
+    return () => controller.abort();
+  }, []);
+
   useEffect(() => {
     const controller = new AbortController();
     async function loadAvailability() {
       try {
-        const params = new URLSearchParams({ 
-          month: `${currentMonth.getFullYear()}-${String(currentMonth.getMonth() + 1).padStart(2, "0")}` 
+        const params = new URLSearchParams({
+          month: `${currentMonth.getFullYear()}-${String(currentMonth.getMonth() + 1).padStart(2, "0")}`,
         });
         const res = await fetch(`/api/availability?${params.toString()}`, { signal: controller.signal });
         if (!res.ok) throw new Error("Failed to load availability");
         const data = (await res.json()) as AvailabilityResponse;
         setAvailability(data);
       } catch (e: unknown) {
-        const isAbort = typeof e === "object" && e !== null && "name" in e && (e as { name?: string }).name === "AbortError";
+        const isAbort =
+          typeof e === "object" && e !== null && "name" in e && (e as { name?: string }).name === "AbortError";
         if (!isAbort) console.error(e);
       }
     }
@@ -51,11 +77,20 @@ export default function BookingForm() {
     return () => controller.abort();
   }, [currentMonth]);
 
-  // Reset selected date and time when month changes
   useEffect(() => {
     setSelectedDate(null);
     setSelectedTime("");
   }, [currentMonth]);
+
+  const dateLabel = useMemo(() => {
+    if (!selectedDate) return "Choose a date";
+    return selectedDate.toLocaleDateString("en-GB", {
+      weekday: "long",
+      day: "numeric",
+      month: "long",
+      year: "numeric",
+    });
+  }, [selectedDate]);
 
   const timeSlots = useMemo(() => {
     if (!availability || !selectedDate) return [];
@@ -63,8 +98,24 @@ export default function BookingForm() {
     return availability.slotsByDate[key] ?? [];
   }, [availability, selectedDate]);
 
+  const groupedServices = useMemo(() => {
+    const byCat: Record<string, ServiceRow[]> = {};
+    for (const s of services) {
+      (byCat[s.category] ||= []).push(s);
+    }
+    const order = CATEGORY_ORDER.filter((c) => byCat[c]).concat(
+      Object.keys(byCat).filter((c) => !CATEGORY_ORDER.includes(c)),
+    );
+    return order.map((cat) => ({ cat, items: byCat[cat] }));
+  }, [services]);
+
+  const selectedService = useMemo(
+    () => services.find((s) => s.slug === service),
+    [services, service],
+  );
+
   const changeMonth = (direction: number) => {
-    setCurrentMonth(prev => addMonths(prev, direction));
+    setCurrentMonth((prev) => addMonths(prev, direction));
   };
 
   async function submit(e: React.FormEvent) {
@@ -75,7 +126,15 @@ export default function BookingForm() {
       const res = await fetch("/api/booking", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ service, name, email, phone, notes, date: selectedDate.toISOString().slice(0, 10), time: selectedTime }),
+        body: JSON.stringify({
+          service,
+          name,
+          email,
+          phone,
+          notes,
+          date: selectedDate.toISOString().slice(0, 10),
+          time: selectedTime,
+        }),
       });
       if (!res.ok) throw new Error("Failed to submit booking");
       alert("Thank you for your booking request! We'll contact you within 24 hours to confirm.");
@@ -96,37 +155,76 @@ export default function BookingForm() {
   return (
     <form onSubmit={submit} className="space-y-6">
       <div>
-        <label className="block font-semibold mb-2">Select Service</label>
-        <select value={service} onChange={(e) => setService(e.target.value)} className="w-full px-3 py-2 rounded bg-white text-[#4a4037] border border-[#f5f2ed] focus:border-[#d4b896] focus:outline-none" required>
+        <label htmlFor="service" className="block font-semibold mb-2">Select Service</label>
+        <select
+          id="service"
+          value={service}
+          onChange={(e) => setService(e.target.value)}
+          className="w-full px-3 py-2 rounded bg-white text-[#4a4037] border border-[#f5f2ed] focus:border-[#d4b896] focus:outline-none"
+          required
+        >
           <option value="">Choose a service...</option>
-          <optgroup label="Services">
-            <option value="studio-makeup">Studio makeup</option>
-            <option value="party-guest-makeup">Party guest makeup</option>
-            <option value="photoshoot-glam">Photoshoot glam</option>
-            <option value="bridesmaids-bookings">Bridesmaids bookings</option>
-            <option value="prom-glam">Graduation & Prom Glam</option>
-            <option value="travel-makeup">Travel to client location makeup service</option>
-            <option value="diy-makeup-class">DIY one on one makeup class</option>
-            <option value="gele-tying">Gele tying</option>
-          </optgroup>
-          <optgroup label="Bridal services">
-            <option value="bridal-civil">Civil wedding</option>
-            <option value="bridal-traditional">Traditional wedding</option>
-            <option value="bridal-white">White wedding</option>
-            <option value="bridal-combination">Combination of all</option>
-          </optgroup>
+          {groupedServices.map(({ cat, items }) => (
+            <optgroup key={cat} label={CATEGORY_LABELS[cat] ?? cat}>
+              {items.map((s) => {
+                const price = formatPriceFrom(s.price_from);
+                return (
+                  <option key={s.id} value={s.slug}>
+                    {s.title}
+                    {price ? ` — ${price.toLowerCase()}` : ""}
+                  </option>
+                );
+              })}
+            </optgroup>
+          ))}
         </select>
+        {selectedService?.price_from != null && (
+          <p className="mt-2 text-sm text-white/90">
+            {formatPriceFrom(selectedService.price_from)} · Final quote confirmed after booking.
+          </p>
+        )}
       </div>
 
       <div>
-        <label className="block font-semibold mb-2">Select Date</label>
-        <Calendar
-          month={currentMonth}
-          onSelect={setSelectedDate}
-          selectedDate={selectedDate}
-          availableDates={availability?.dates}
-          onChangeMonth={changeMonth}
-        />
+        <label className="block font-semibold mb-2" id="date-label">Select Date</label>
+        <button
+          type="button"
+          onClick={() => setDateOpen((v) => !v)}
+          aria-expanded={dateOpen ? "true" : "false"}
+          aria-controls="date-picker"
+          aria-labelledby="date-label"
+          className="w-full flex items-center justify-between gap-3 px-4 py-3 rounded bg-white text-left text-[#4a4037] border border-[#f5f2ed] hover:border-[#d4b896] focus:border-[#d4b896] focus:outline-none transition"
+        >
+          <span className="flex items-center gap-2">
+            <svg className="w-4 h-4 text-[#b49b82]" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+            </svg>
+            <span className={selectedDate ? "font-medium" : "text-[#8b7355]"}>{dateLabel}</span>
+          </span>
+          <svg
+            className={`w-4 h-4 text-[#8b7355] transition-transform ${dateOpen ? "rotate-180" : ""}`}
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+            aria-hidden="true"
+          >
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+          </svg>
+        </button>
+        {dateOpen && (
+          <div id="date-picker" className="mt-3 p-3 bg-white rounded border border-[#f5f2ed]">
+            <Calendar
+              month={currentMonth}
+              onSelect={(d) => {
+                setSelectedDate(d);
+                setDateOpen(false);
+              }}
+              selectedDate={selectedDate}
+              availableDates={availability?.dates}
+              onChangeMonth={changeMonth}
+            />
+          </div>
+        )}
       </div>
 
       <div>
@@ -153,28 +251,26 @@ export default function BookingForm() {
 
       <div className="grid sm:grid-cols-2 gap-4">
         <div>
-          <label className="block font-semibold mb-2">Full Name</label>
-          <input value={name} onChange={(e) => setName(e.target.value)} className="w-full px-3 py-2 rounded bg-white text-[#4a4037] border border-[#f5f2ed] focus:border-[#d4b896] focus:outline-none" required />
+          <label htmlFor="name" className="block font-semibold mb-2">Full Name</label>
+          <input id="name" value={name} onChange={(e) => setName(e.target.value)} className="w-full px-3 py-2 rounded bg-white text-[#4a4037] border border-[#f5f2ed] focus:border-[#d4b896] focus:outline-none" required />
         </div>
         <div>
-          <label className="block font-semibold mb-2">Email</label>
-          <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} className="w-full px-3 py-2 rounded bg-white text-[#4a4037] border border-[#f5f2ed] focus:border-[#d4b896] focus:outline-none" required />
+          <label htmlFor="email" className="block font-semibold mb-2">Email</label>
+          <input id="email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} className="w-full px-3 py-2 rounded bg-white text-[#4a4037] border border-[#f5f2ed] focus:border-[#d4b896] focus:outline-none" required />
         </div>
         <div>
-          <label className="block font-semibold mb-2">Phone Number</label>
-          <input value={phone} onChange={(e) => setPhone(e.target.value)} className="w-full px-3 py-2 rounded bg-white text-[#4a4037] border border-[#f5f2ed] focus:border-[#d4b896] focus:outline-none" required />
+          <label htmlFor="phone" className="block font-semibold mb-2">Phone Number</label>
+          <input id="phone" value={phone} onChange={(e) => setPhone(e.target.value)} className="w-full px-3 py-2 rounded bg-white text-[#4a4037] border border-[#f5f2ed] focus:border-[#d4b896] focus:outline-none" required />
         </div>
         <div className="sm:col-span-2">
-          <label className="block font-semibold mb-2">Special Requests (Optional)</label>
-          <textarea rows={3} value={notes} onChange={(e) => setNotes(e.target.value)} className="w-full px-3 py-2 rounded bg-white text-[#4a4037] border border-[#f5f2ed] focus:border-[#d4b896] focus:outline-none" placeholder="Any specific requirements or questions..."></textarea>
+          <label htmlFor="notes" className="block font-semibold mb-2">Special Requests (Optional)</label>
+          <textarea id="notes" rows={3} value={notes} onChange={(e) => setNotes(e.target.value)} className="w-full px-3 py-2 rounded bg-white text-[#4a4037] border border-[#f5f2ed] focus:border-[#d4b896] focus:outline-none" placeholder="Any specific requirements or questions..."></textarea>
         </div>
       </div>
 
-      <button disabled={submitting} className="rounded-full bg-white text-[#b49b82] font-semibold px-6 py-3 hover:translate-y-[-2px] transition shadow-lg hover:shadow-xl">
+      <button type="submit" disabled={submitting} className="rounded-full bg-white text-[#b49b82] font-semibold px-6 py-3 hover:translate-y-[-2px] transition shadow-lg hover:shadow-xl disabled:opacity-60 disabled:cursor-not-allowed">
         {submitting ? "Submitting..." : "Confirm Booking"}
       </button>
     </form>
   );
 }
-
-
