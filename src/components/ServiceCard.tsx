@@ -25,9 +25,9 @@ export default function ServiceCard({ title, description, features, value, categ
         </h3>
 
         {priceLabel && (
-          <div className="mb-5 inline-flex items-baseline gap-1">
+          <div className="mb-5 inline-flex items-baseline gap-1.5">
             <span className="text-[10px] uppercase tracking-[0.25em] text-[#8b7355]">{priceLabel.split(" ")[0]}</span>
-            <span className="text-xl font-light text-[#4a4037]">{priceLabel.replace(/^From\s*/, "")}</span>
+            <span className="font-serif text-2xl font-medium text-[#7a2e3f]">{priceLabel.replace(/^From\s*/, "")}</span>
           </div>
         )}
 

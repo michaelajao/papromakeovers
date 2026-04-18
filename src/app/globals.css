@@ -11,11 +11,14 @@
   --color-brand: #b49b82;
   --color-brand-dark: #8b7355;
   --color-brand-soft: #d4b896;
+  --color-accent: #7a2e3f;
+  --color-accent-soft: #9d4d5f;
+  --color-accent-dark: #5c1f2c;
   --color-cream: #faf8f5;
   --color-beige: #f5f2ed;
   --color-ink: #3a322b;
   --color-ink-soft: #5c5048;
-  --font-sans: var(--font-geist-sans);
+  --font-sans: var(--font-sans-body);
   --font-mono: var(--font-geist-mono);
   --font-serif: var(--font-serif-display);
 }
@@ -30,7 +33,8 @@
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: var(--font-geist-sans), Arial, Helvetica, sans-serif;
+  font-family: var(--font-sans-body), "Inter Tight", Arial, Helvetica, sans-serif;
+  font-feature-settings: "ss01" on, "cv11" on;
 }
 
 .font-serif,
@@ -42,4 +46,45 @@ body {
 @keyframes fadeInUp {
   from { opacity: 0; transform: translateY(30px); }
   to { opacity: 1; transform: translateY(0); }
+}
+
+/* Scroll-reveal: hidden by default, visible when [data-revealed="true"] is set */
+.reveal {
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 700ms ease-out, transform 700ms ease-out;
+  will-change: opacity, transform;
+}
+.reveal[data-revealed="true"] {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Respect reduced-motion users: disable all fade/transition */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+  .reveal {
+    opacity: 1 !important;
+    transform: none !important;
+  }
+}
+
+/* Focus rings: use accent burgundy for high-visibility a11y */
+:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+button:focus-visible,
+a:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
 }

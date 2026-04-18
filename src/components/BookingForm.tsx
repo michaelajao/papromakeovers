@@ -212,10 +212,10 @@ export default function BookingForm() {
     <form onSubmit={submit} className="space-y-6">
       {feedback && (
         <div
-          className={`px-4 py-3 rounded text-sm ${
+          className={`px-4 py-3 rounded text-sm border ${
             feedback.kind === "success"
-              ? "bg-white/90 text-[#3a322b] border border-white"
-              : "bg-red-50 text-red-800 border border-red-200"
+              ? "bg-[#faf8f5] text-[#3a322b] border-[#d4b896]"
+              : "bg-red-50 text-red-800 border-red-200"
           }`}
           role={feedback.kind === "error" ? "alert" : "status"}
         >
@@ -248,8 +248,9 @@ export default function BookingForm() {
           ))}
         </select>
         {selectedService?.price_from != null && (
-          <p className="mt-2 text-sm text-white/90">
-            {formatPriceFrom(selectedService.price_from)} · Final quote confirmed after booking.
+          <p className="mt-2 text-sm text-[#5c5048]">
+            <span className="font-serif text-lg text-[#7a2e3f] mr-1">{formatPriceFrom(selectedService.price_from).replace(/^From\s*/, "From ")}</span>
+            · Final quote confirmed after booking.
           </p>
         )}
       </div>
@@ -291,6 +292,7 @@ export default function BookingForm() {
               selectedDate={selectedDate}
               availableDates={availability?.dates}
               onChangeMonth={changeMonth}
+              onGoToToday={() => setCurrentMonth(new Date())}
             />
           </div>
         )}
@@ -298,23 +300,29 @@ export default function BookingForm() {
 
       <div>
         <label className="block font-semibold mb-2">Available Time Slots</label>
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-2" role="group" aria-label="Available time slots">
           {timeSlots.length === 0 && (
-            <div className="col-span-4 text-white/80">Select a date to see available times.</div>
+            <div className="col-span-4 text-sm text-[#8b7355]">Select a date to see available times.</div>
           )}
-          {timeSlots.map((t) => (
-            <button
-              key={t}
-              type="button"
-              onClick={() => setSelectedTime(t)}
-              className={[
-                "px-3 py-2 rounded bg-white text-[#4a4037] text-center hover:bg-[#d4b896] hover:text-white transition border border-[#f5f2ed]",
-                selectedTime === t ? "!bg-[#b49b82] !text-white shadow-md" : "",
-              ].join(" ")}
-            >
-              {t}
-            </button>
-          ))}
+          {timeSlots.map((t) => {
+            const isSelected = selectedTime === t;
+            return (
+              <button
+                key={t}
+                type="button"
+                onClick={() => setSelectedTime(t)}
+                aria-pressed={isSelected ? "true" : "false"}
+                className={[
+                  "px-3 py-2 rounded text-center text-sm transition border",
+                  isSelected
+                    ? "bg-[#7a2e3f] text-white border-[#7a2e3f] shadow-md"
+                    : "bg-white text-[#4a4037] border-[#e5ddd1] hover:border-[#7a2e3f] hover:text-[#7a2e3f]",
+                ].join(" ")}
+              >
+                {t}
+              </button>
+            );
+          })}
         </div>
       </div>
 
@@ -337,7 +345,11 @@ export default function BookingForm() {
         </div>
       </div>
 
-      <button type="submit" disabled={submitting} className="rounded-full bg-white text-[#b49b82] font-semibold px-6 py-3 hover:translate-y-[-2px] transition shadow-lg hover:shadow-xl disabled:opacity-60 disabled:cursor-not-allowed">
+      <button
+        type="submit"
+        disabled={submitting}
+        className="w-full sm:w-auto rounded-full bg-[#7a2e3f] text-white font-semibold px-8 py-3.5 shadow-[0_10px_25px_rgba(122,46,63,0.35)] hover:bg-[#5c1f2c] hover:translate-y-[-2px] transition disabled:opacity-60 disabled:cursor-not-allowed"
+      >
         {submitting ? "Submitting..." : "Confirm Booking"}
       </button>
     </form>

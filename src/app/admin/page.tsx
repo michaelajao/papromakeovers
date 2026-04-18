@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import AdminCalendar from "@/components/AdminCalendar";
 import TimeSlotManager from "@/components/TimeSlotManager";
 import ServicesManager from "@/components/admin/ServicesManager";
@@ -74,18 +74,30 @@ export default function AdminPage() {
     setTab(next);
   }
 
+  // Ref mirrors hasUnsavedChanges so async handlers can read current value
+  // without capturing a stale closure.
+  const unsavedRef = useRef(false);
+  useEffect(() => { unsavedRef.current = hasUnsavedChanges; }, [hasUnsavedChanges]);
+
   useEffect(() => {
+    const controller = new AbortController();
+    const reqMonth = month;
     (async () => {
-      const res = await fetch(`/api/availability?month=${month}`);
-      if (res.ok) {
-        const data = (await res.json()) as Payload;
-        setDates(data.dates);
-        setSlotsByDate(data.slotsByDate);
-        setHasUnsavedChanges(false);
-      }
-      // Load bookings for the month (admin only)
       try {
-        const br = await fetch(`/api/bookings?month=${month}`);
+        const res = await fetch(`/api/availability?month=${reqMonth}`, { signal: controller.signal });
+        if (res.ok && !unsavedRef.current) {
+          const data = (await res.json()) as Payload;
+          setDates(data.dates);
+          setSlotsByDate(data.slotsByDate);
+        }
+      } catch (err: unknown) {
+        const isAbort =
+          typeof err === "object" && err !== null && "name" in err && (err as { name?: string }).name === "AbortError";
+        if (!isAbort) console.error(err);
+      }
+
+      try {
+        const br = await fetch(`/api/bookings?month=${reqMonth}`, { signal: controller.signal });
         if (br.ok) {
           const bj = (await br.json()) as { bookings: AdminBooking[] };
           setBookings(bj.bookings);
@@ -93,9 +105,10 @@ export default function AdminPage() {
           setBookings([]);
         }
       } catch {
-        setBookings([]);
+        // AbortError — harmless, leave state alone.
       }
     })();
+    return () => controller.abort();
   }, [month]);
 
   function handleDateSelect(dateStr: string) {
@@ -238,7 +251,7 @@ export default function AdminPage() {
               onClick={() => handleTabChange(t.id)}
               className={`px-4 py-2 text-sm font-medium border-b-2 -mb-px transition-colors ${
                 tab === t.id
-                  ? "border-[#b49b82] text-[#3a322b]"
+                  ? "border-[#7a2e3f] text-[#3a322b]"
                   : "border-transparent text-[#6b5d4f] hover:text-[#3a322b]"
               }`}
             >

@@ -4,6 +4,7 @@ import BookingForm from "@/components/BookingForm";
 import ServicesSection from "@/components/ServicesSection";
 import TestimonialsSection from "@/components/TestimonialsSection";
 import FAQSection from "@/components/FAQSection";
+import GalleryLightbox from "@/components/GalleryLightbox";
 import Image from "next/image";
 import path from "path";
 import { promises as fs } from "fs";
@@ -60,15 +61,15 @@ export default async function Home() {
               we create stunning looks that make you feel confident and beautiful.
             </p>
             <div className="flex flex-wrap gap-4 justify-center">
-              <a href="#booking" className="rounded-full bg-gradient-to-br from-[#b49b82] to-[#8b7355] text-white font-semibold px-6 py-3 shadow-[0_10px_25px_rgba(180,155,130,0.4)] hover:translate-y-[-2px] transition">Book Appointment</a>
-              <a href="#services" className="rounded-full border-2 border-[#b49b82] text-[#b49b82] font-semibold px-6 py-3 hover:bg-[#b49b82] hover:text-white transition">View Services</a>
+              <a href="#booking" className="rounded-full bg-[#7a2e3f] text-white font-semibold px-7 py-3.5 shadow-[0_10px_25px_rgba(122,46,63,0.35)] hover:bg-[#5c1f2c] hover:translate-y-[-2px] transition">Reserve Your Chair</a>
+              <a href="#services" className="rounded-full border-2 border-[#b49b82] text-[#8b7355] font-semibold px-6 py-3 hover:bg-[#b49b82] hover:text-white transition">Explore Services</a>
             </div>
           </div>
         </section>
 
         <section id="about" className="py-24 bg-[#f5f2ed]">
           <div className="max-w-[1200px] mx-auto px-5 grid md:grid-cols-2 gap-16 items-center">
-            <div>
+            <div data-reveal>
               <div className="text-xs uppercase tracking-[0.3em] text-[#b49b82] mb-4">Our Story</div>
               <h2 className="font-serif text-4xl sm:text-5xl text-[#3a322b] mb-6 font-normal">About Papromakeovers</h2>
               <div className="w-12 h-px bg-[#d4b896] mb-8" aria-hidden="true" />
@@ -76,7 +77,7 @@ export default async function Home() {
               <p className="text-[#5c5048] mb-4 leading-relaxed">Whether it&apos;s your wedding day, a special event, or you simply want to treat yourself, we use only the finest products and techniques to ensure a flawless finish that lasts all day.</p>
               <p className="text-[#5c5048] leading-relaxed">Based in the UK, we offer both studio appointments and mobile services to bring the luxury experience directly to you.</p>
             </div>
-            <div className="text-center">
+            <div className="text-center" data-reveal>
               <div className="relative w-[300px] h-[300px] mx-auto">
                 <div className="relative w-full h-full rounded-full overflow-hidden shadow-[0_20px_40px_rgba(180,155,130,0.3)] border-4 border-[#d4b896]">
                   <Image
@@ -100,28 +101,15 @@ export default async function Home() {
 
         <section id="gallery" className="py-24 bg-[#f5f2ed]">
           <div className="max-w-[1200px] mx-auto px-5">
-            <div className="text-center mb-16">
+            <div className="text-center mb-16" data-reveal>
               <div className="text-xs uppercase tracking-[0.3em] text-[#b49b82] mb-4">Portfolio</div>
               <h2 className="font-serif text-4xl sm:text-5xl text-[#3a322b] mb-6 font-normal">Our Work</h2>
               <div className="w-12 h-px bg-[#d4b896] mx-auto" aria-hidden="true" />
+              <p className="mt-6 text-sm text-[#6b5d4f]">Tap any look to see it full screen.</p>
             </div>
-            {galleryFiles.length === 0 ? (
-              <p className="text-center text-[#6b5d4f] py-8">Gallery coming soon.</p>
-            ) : (
-              <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
-                {galleryFiles.map(({ file, alt }) => (
-                  <div key={file} className="relative aspect-square overflow-hidden rounded-2xl bg-[#e9e3db] hover:scale-[1.01] transition shadow-lg">
-                    <Image
-                      src={`/gallery/${file}`}
-                      alt={alt}
-                      fill
-                      sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
-                      className="object-cover"
-                    />
-                  </div>
-                ))}
-              </div>
-            )}
+
+            <GalleryLightbox files={galleryFiles} />
+
             <div className="mt-12 text-center">
               <a
                 href="https://www.instagram.com/papromakeovers/"
@@ -142,14 +130,37 @@ export default async function Home() {
 
         <FAQSection />
 
-        <section id="booking" className="py-24 bg-gradient-to-br from-[#d4b896] to-[#b49b82] text-white">
-          <div className="max-w-[1200px] mx-auto px-5 text-center">
-            <div className="text-xs uppercase tracking-[0.3em] text-white/80 mb-4">Reserve Your Date</div>
-            <h2 className="font-serif text-4xl sm:text-5xl mb-4 font-normal">Book Your Appointment</h2>
-            <p className="text-white/90 mb-8 max-w-xl mx-auto">Ready to transform your look? Submit a booking request and we&apos;ll confirm within 24 hours.</p>
+        <section id="booking" className="py-24 bg-[#faf8f5] border-t border-[#e5ddd1]">
+          <div className="max-w-[1200px] mx-auto px-5">
+            <div className="text-center mb-14" data-reveal>
+              <div className="text-xs uppercase tracking-[0.3em] text-[#b49b82] mb-4">Reserve Your Date</div>
+              <h2 className="font-serif text-4xl sm:text-5xl text-[#3a322b] mb-4 font-normal">Book Your Appointment</h2>
+              <div className="w-12 h-px bg-[#7a2e3f] mx-auto mb-6" aria-hidden="true" />
+              <p className="text-[#5c5048] max-w-xl mx-auto">Submit a booking request and we&apos;ll confirm within 24 hours.</p>
+            </div>
 
-            <div className="max-w-[720px] mx-auto text-left bg-white/15 p-6 rounded-2xl backdrop-blur border border-white/20">
-              <BookingForm />
+            <div className="grid lg:grid-cols-[1fr_340px] gap-10 items-start">
+              <div className="bg-white rounded-2xl p-6 sm:p-8 border border-[#f5f2ed] shadow-[0_20px_60px_rgba(122,46,63,0.08)]" data-reveal>
+                <BookingForm />
+              </div>
+
+              <aside className="space-y-5 lg:sticky lg:top-24" data-reveal>
+                {testimonials.length > 0 && (
+                  <div className="bg-white rounded-2xl p-6 border border-[#f5f2ed]">
+                    <div className="flex items-center gap-1 text-[#7a2e3f] mb-2" aria-label="5 out of 5 stars">
+                      {Array.from({ length: 5 }).map((_, i) => (
+                        <svg key={i} className="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true">
+                          <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.286 3.964a1 1 0 00.95.69h4.17c.969 0 1.371 1.24.588 1.81l-3.374 2.45a1 1 0 00-.363 1.118l1.287 3.964c.3.922-.755 1.688-1.54 1.118l-3.374-2.45a1 1 0 00-1.175 0l-3.374 2.45c-.784.57-1.838-.196-1.539-1.118l1.287-3.964a1 1 0 00-.363-1.118l-3.374-2.45c-.783-.57-.38-1.81.588-1.81h4.17a1 1 0 00.95-.69l1.286-3.964z" />
+                        </svg>
+                      ))}
+                    </div>
+                    <blockquote className="font-serif text-[#3a322b] text-sm leading-relaxed">
+                      &ldquo;{testimonials[0].quote}&rdquo;
+                    </blockquote>
+                    <div className="mt-3 text-xs text-[#8b7355]">— {testimonials[0].client_name}</div>
+                  </div>
+                )}
+              </aside>
             </div>
           </div>
         </section>
