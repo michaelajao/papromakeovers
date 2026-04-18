@@ -5,12 +5,11 @@ function securityHeaders(): Record<string, string> {
   const isProduction = process.env.NODE_ENV === "production";
   const csp = [
     "default-src 'self'",
-    "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://vercel.live https://va.vercel-scripts.com https://vitals.vercel-insights.com https://www.instagram.com https://*.cdninstagram.com",
+    "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://vercel.live https://va.vercel-scripts.com https://vitals.vercel-insights.com",
     "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
     "font-src 'self' https://fonts.gstatic.com https://fonts.googleapis.com data:",
     "img-src 'self' data: blob: https:",
-    "connect-src 'self' https://vercel.live https://va.vercel-scripts.com https://vitals.vercel-insights.com https://eymlpuygdeqeyoynfjxg.supabase.co wss://eymlpuygdeqeyoynfjxg.supabase.co https://www.instagram.com https://graph.instagram.com",
-    "frame-src 'self' https://www.instagram.com",
+    "connect-src 'self' https://vercel.live https://va.vercel-scripts.com https://vitals.vercel-insights.com https://eymlpuygdeqeyoynfjxg.supabase.co wss://eymlpuygdeqeyoynfjxg.supabase.co",
     "object-src 'none'",
     "base-uri 'self'",
     "form-action 'self'",
