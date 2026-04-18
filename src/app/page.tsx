@@ -105,22 +105,23 @@ export default async function Home() {
               <h2 className="font-serif text-4xl sm:text-5xl text-[#3a322b] mb-6 font-normal">Our Work</h2>
               <div className="w-12 h-px bg-[#d4b896] mx-auto" aria-hidden="true" />
             </div>
-            <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
-              {(galleryFiles.length
-                ? galleryFiles
-                : [{ file: "beauty-1.jpg", alt: "Papromakeovers beauty look" }]
-              ).map(({ file, alt }) => (
-                <div key={file} className="relative aspect-square overflow-hidden rounded-2xl bg-[#e9e3db] hover:scale-[1.01] transition shadow-lg">
-                  <Image
-                    src={`/gallery/${file}`}
-                    alt={alt}
-                    fill
-                    sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
-                    className="object-cover"
-                  />
-                </div>
-              ))}
-            </div>
+            {galleryFiles.length === 0 ? (
+              <p className="text-center text-[#6b5d4f] py-8">Gallery coming soon.</p>
+            ) : (
+              <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+                {galleryFiles.map(({ file, alt }) => (
+                  <div key={file} className="relative aspect-square overflow-hidden rounded-2xl bg-[#e9e3db] hover:scale-[1.01] transition shadow-lg">
+                    <Image
+                      src={`/gallery/${file}`}
+                      alt={alt}
+                      fill
+                      sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
+                      className="object-cover"
+                    />
+                  </div>
+                ))}
+              </div>
+            )}
             <div className="mt-12 text-center">
               <a
                 href="https://www.instagram.com/papromakeovers/"

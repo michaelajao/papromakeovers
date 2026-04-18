@@ -23,6 +23,21 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "slug, title and category are required" }, { status: 400 });
   }
   const supabase = createServerAdminClient();
+
+  // Pre-check slug uniqueness so the UI gets a clear error instead of a
+  // generic 500 from the unique-violation.
+  const existing = await supabase
+    .from("services")
+    .select("id")
+    .eq("slug", body.slug)
+    .maybeSingle();
+  if (existing.data) {
+    return NextResponse.json(
+      { error: `Slug "${body.slug}" is already in use by another service.` },
+      { status: 409 },
+    );
+  }
+
   const { data, error } = await supabase
     .from("services")
     .insert({

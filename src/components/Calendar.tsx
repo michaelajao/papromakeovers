@@ -2,6 +2,7 @@
 
 import { eachDayOfInterval, endOfMonth, format, getDay, isSameDay, startOfMonth } from "date-fns";
 import { useMemo } from "react";
+import { toLocalDateString } from "@/lib/date";
 
 type Props = {
   month: Date;
@@ -56,7 +57,7 @@ export default function Calendar({ month, selectedDate, onSelect, availableDates
           <div key={`lead-${i}`} />
         ))}
         {days.map((d) => {
-          const iso = d.toISOString().slice(0, 10);
+          const iso = toLocalDateString(d);
           const isAvailable = availableSet.size === 0 || availableSet.has(iso);
           const selected = selectedDate && isSameDay(selectedDate, d);
           return (

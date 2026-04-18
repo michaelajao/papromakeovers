@@ -98,7 +98,9 @@ export default function AdminCalendar({
       <div className="p-4 border-b border-[#f5f2ed]">
         <div className="flex items-center justify-between">
           <button
+            type="button"
             onClick={goToPreviousMonth}
+            aria-label="Previous month"
             className="p-2 rounded hover:bg-[#f5f2ed] transition-colors text-[#6b5d4f] hover:text-[#4a4037]"
           >
             ←
@@ -107,7 +109,9 @@ export default function AdminCalendar({
             {format(month, "LLLL yyyy")}
           </h3>
           <button
+            type="button"
             onClick={goToNextMonth}
+            aria-label="Next month"
             className="p-2 rounded hover:bg-[#f5f2ed] transition-colors text-[#6b5d4f] hover:text-[#4a4037]"
           >
             →

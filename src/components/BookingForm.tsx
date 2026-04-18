@@ -1,9 +1,10 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { addMonths } from "date-fns";
 import Calendar from "@/components/Calendar";
 import { formatPriceFrom } from "@/lib/price";
+import { toLocalDateString } from "@/lib/date";
 import type { ServiceRow } from "@/types/service";
 
 type AvailabilityResponse = {
@@ -32,6 +33,8 @@ export default function BookingForm() {
   const [currentMonth, setCurrentMonth] = useState(new Date());
   const [submitting, setSubmitting] = useState(false);
   const [dateOpen, setDateOpen] = useState(false);
+  const [feedback, setFeedback] = useState<{ kind: "success" | "error"; text: string } | null>(null);
+  const submittingRef = useRef(false);
 
   useEffect(() => {
     if (typeof window !== "undefined") {
@@ -77,10 +80,18 @@ export default function BookingForm() {
     return () => controller.abort();
   }, [currentMonth]);
 
+  // Only clear selection when the currently-selected date falls outside the
+  // new month. Flipping back and forth shouldn't wipe a committed choice.
   useEffect(() => {
-    setSelectedDate(null);
-    setSelectedTime("");
-  }, [currentMonth]);
+    if (!selectedDate) return;
+    const sameMonth =
+      selectedDate.getFullYear() === currentMonth.getFullYear() &&
+      selectedDate.getMonth() === currentMonth.getMonth();
+    if (!sameMonth) {
+      setSelectedDate(null);
+      setSelectedTime("");
+    }
+  }, [currentMonth, selectedDate]);
 
   const dateLabel = useMemo(() => {
     if (!selectedDate) return "Choose a date";
@@ -94,7 +105,7 @@ export default function BookingForm() {
 
   const timeSlots = useMemo(() => {
     if (!availability || !selectedDate) return [];
-    const key = selectedDate.toISOString().slice(0, 10);
+    const key = toLocalDateString(selectedDate);
     return availability.slotsByDate[key] ?? [];
   }, [availability, selectedDate]);
 
@@ -121,8 +132,41 @@ export default function BookingForm() {
   async function submit(e: React.FormEvent) {
     e.preventDefault();
     if (!service || !name || !email || !phone || !selectedDate || !selectedTime) return;
+    if (submittingRef.current) return;
+    submittingRef.current = true;
     setSubmitting(true);
+    setFeedback(null);
+
+    const dateKey = toLocalDateString(selectedDate);
+
     try {
+      // Refetch services + availability to catch the case where the service was
+      // deactivated or the slot was taken while this form was open.
+      const [svcRes, availRes] = await Promise.all([
+        fetch("/api/services"),
+        fetch(
+          `/api/availability?month=${currentMonth.getFullYear()}-${String(currentMonth.getMonth() + 1).padStart(2, "0")}`,
+        ),
+      ]);
+      if (svcRes.ok) {
+        const svcData = (await svcRes.json()) as { services: ServiceRow[] };
+        const stillActive = svcData.services.some((s) => s.slug === service);
+        if (!stillActive) {
+          setFeedback({ kind: "error", text: "That service is no longer available. Please pick another." });
+          return;
+        }
+      }
+      if (availRes.ok) {
+        const availData = (await availRes.json()) as AvailabilityResponse;
+        const currentSlots = availData.slotsByDate[dateKey] ?? [];
+        if (!currentSlots.includes(selectedTime)) {
+          setFeedback({ kind: "error", text: "That time has just been taken. Pick another slot — we refreshed the list." });
+          setAvailability(availData);
+          setSelectedTime("");
+          return;
+        }
+      }
+
       const res = await fetch("/api/booking", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -132,12 +176,23 @@ export default function BookingForm() {
           email,
           phone,
           notes,
-          date: selectedDate.toISOString().slice(0, 10),
+          date: dateKey,
           time: selectedTime,
         }),
       });
+      if (res.status === 409) {
+        const body = (await res.json().catch(() => ({}))) as { error?: string };
+        setFeedback({ kind: "error", text: body.error ?? "That time was just taken." });
+        // Refresh availability so the user can pick another.
+        if (availRes.ok) {
+          const availData = (await availRes.json().catch(() => null)) as AvailabilityResponse | null;
+          if (availData) setAvailability(availData);
+        }
+        setSelectedTime("");
+        return;
+      }
       if (!res.ok) throw new Error("Failed to submit booking");
-      alert("Thank you for your booking request! We'll contact you within 24 hours to confirm.");
+      setFeedback({ kind: "success", text: "Thank you! Your booking request was received. We'll confirm within 24 hours." });
       setService("");
       setName("");
       setEmail("");
@@ -146,14 +201,28 @@ export default function BookingForm() {
       setSelectedDate(null);
       setSelectedTime("");
     } catch {
-      alert("Sorry, something went wrong. Please try again.");
+      setFeedback({ kind: "error", text: "Sorry, something went wrong. Please try again." });
     } finally {
+      submittingRef.current = false;
       setSubmitting(false);
     }
   }
 
   return (
     <form onSubmit={submit} className="space-y-6">
+      {feedback && (
+        <div
+          className={`px-4 py-3 rounded text-sm ${
+            feedback.kind === "success"
+              ? "bg-white/90 text-[#3a322b] border border-white"
+              : "bg-red-50 text-red-800 border border-red-200"
+          }`}
+          role={feedback.kind === "error" ? "alert" : "status"}
+        >
+          {feedback.text}
+        </div>
+      )}
+
       <div>
         <label htmlFor="service" className="block font-semibold mb-2">Select Service</label>
         <select

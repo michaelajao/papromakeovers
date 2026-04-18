@@ -5,6 +5,7 @@ import AdminCalendar from "@/components/AdminCalendar";
 import TimeSlotManager from "@/components/TimeSlotManager";
 import ServicesManager from "@/components/admin/ServicesManager";
 import { createClient } from "@/utils/supabase/client";
+import { toLocalDateString, toLocalMonthString } from "@/lib/date";
 
 type AdminTab = "availability" | "services";
 
@@ -13,7 +14,7 @@ type Payload = { month: string; dates: string[]; slotsByDate: Record<string, str
 export default function AdminPage() {
   const [tab, setTab] = useState<AdminTab>("availability");
   const [currentMonth, setCurrentMonth] = useState<Date>(new Date());
-  const [month, setMonth] = useState<string>(new Date().toISOString().slice(0, 7));
+  const [month, setMonth] = useState<string>(toLocalMonthString(new Date()));
   const [dates, setDates] = useState<string[]>([]);
   const [slotsByDate, setSlotsByDate] = useState<Record<string, string[]>>({});
   const [saving, setSaving] = useState(false);
@@ -22,6 +23,14 @@ export default function AdminPage() {
   type AdminBooking = { id: number; name: string; service: string; date: string; time: string; status: string };
   const [bookings, setBookings] = useState<AdminBooking[]>([]);
   const [userEmail, setUserEmail] = useState<string>("");
+  const [banner, setBanner] = useState<{ kind: "success" | "error"; text: string } | null>(null);
+
+  function showBanner(kind: "success" | "error", text: string, autoDismiss = true) {
+    setBanner({ kind, text });
+    if (autoDismiss) {
+      window.setTimeout(() => setBanner(null), 4000);
+    }
+  }
 
   useEffect(() => {
     (async () => {
@@ -38,9 +47,32 @@ export default function AdminPage() {
   }
 
   useEffect(() => {
-    const monthStr = currentMonth.toISOString().slice(0, 7);
-    setMonth(monthStr);
+    setMonth(toLocalMonthString(currentMonth));
   }, [currentMonth]);
+
+  // Warn the user before closing the tab with unsaved availability changes.
+  useEffect(() => {
+    if (!hasUnsavedChanges) return;
+    const onBeforeUnload = (e: BeforeUnloadEvent) => {
+      e.preventDefault();
+      e.returnValue = "";
+    };
+    window.addEventListener("beforeunload", onBeforeUnload);
+    return () => window.removeEventListener("beforeunload", onBeforeUnload);
+  }, [hasUnsavedChanges]);
+
+  function handleTabChange(next: AdminTab) {
+    if (next === tab) return;
+    if (tab === "availability" && hasUnsavedChanges) {
+      const confirmed = window.confirm(
+        "You have unsaved availability changes. Discard them and switch tabs?",
+      );
+      if (!confirmed) return;
+      // Reload from server to drop the in-memory edits.
+      setHasUnsavedChanges(false);
+    }
+    setTab(next);
+  }
 
   useEffect(() => {
     (async () => {
@@ -114,16 +146,16 @@ export default function AdminPage() {
   async function save() {
     setSaving(true);
     try {
-          const res = await fetch("/api/availability", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ month, dates, slotsByDate }),
-    });
+      const res = await fetch("/api/availability", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ month, dates, slotsByDate }),
+      });
       if (!res.ok) throw new Error("Save failed");
-      alert("Availability saved");
+      showBanner("success", "Availability saved");
       setHasUnsavedChanges(false);
     } catch {
-      alert("Failed to save availability");
+      showBanner("error", "Failed to save availability. Please try again.", false);
     } finally {
       setSaving(false);
     }
@@ -152,10 +184,16 @@ export default function AdminPage() {
               {userEmail && (
                 <div className="text-xs text-[#6b5d4f]">Signed in as</div>
               )}
-              <div className="flex items-center gap-3">
+              <div className="flex items-center gap-3 flex-wrap justify-end">
                 {userEmail && (
                   <span className="text-sm font-medium text-[#4a4037]">{userEmail}</span>
                 )}
+                <a
+                  href="/admin/update-password"
+                  className="text-sm px-3 py-1.5 rounded border border-[#d4b896] text-[#8b7355] hover:bg-[#faf8f5] transition-colors"
+                >
+                  Change password
+                </a>
                 <button
                   type="button"
                   onClick={handleSignOut}
@@ -168,6 +206,27 @@ export default function AdminPage() {
           </div>
         </div>
 
+        {banner && (
+          <div
+            className={`mb-6 px-4 py-3 rounded border text-sm flex items-start justify-between gap-4 ${
+              banner.kind === "success"
+                ? "bg-green-50 border-green-200 text-green-800"
+                : "bg-red-50 border-red-200 text-red-800"
+            }`}
+            role={banner.kind === "error" ? "alert" : "status"}
+          >
+            <span>{banner.text}</span>
+            <button
+              type="button"
+              onClick={() => setBanner(null)}
+              className="text-xs opacity-70 hover:opacity-100"
+              aria-label="Dismiss"
+            >
+              ✕
+            </button>
+          </div>
+        )}
+
         <div className="flex items-center gap-2 border-b border-[#e5ddd1] mb-8">
           {([
             { id: "availability", label: "Availability & Bookings" },
@@ -176,7 +235,7 @@ export default function AdminPage() {
             <button
               key={t.id}
               type="button"
-              onClick={() => setTab(t.id)}
+              onClick={() => handleTabChange(t.id)}
               className={`px-4 py-2 text-sm font-medium border-b-2 -mb-px transition-colors ${
                 tab === t.id
                   ? "border-[#b49b82] text-[#3a322b]"
@@ -204,9 +263,10 @@ export default function AdminPage() {
               )}
             </div>
             {/* Mobile save button */}
-            <button 
-              disabled={saving || !hasUnsavedChanges} 
-              onClick={save} 
+            <button
+              type="button"
+              disabled={saving || !hasUnsavedChanges}
+              onClick={save}
               className={`sm:hidden rounded px-4 py-2 text-sm shadow-lg transition-all ${
                 saving || !hasUnsavedChanges
                   ? "bg-gray-300 text-gray-500 cursor-not-allowed"
@@ -217,9 +277,10 @@ export default function AdminPage() {
             </button>
           </div>
           {/* Desktop save button */}
-          <button 
-            disabled={saving || !hasUnsavedChanges} 
-            onClick={save} 
+          <button
+            type="button"
+            disabled={saving || !hasUnsavedChanges}
+            onClick={save}
             className={`hidden sm:block rounded px-6 py-2 shadow-lg transition-all ${
               saving || !hasUnsavedChanges
                 ? "bg-gray-300 text-gray-500 cursor-not-allowed"
@@ -286,21 +347,26 @@ export default function AdminPage() {
                       </div>
                       <div className="flex items-center gap-2">
                         <button
+                          type="button"
                           onClick={async () => {
-                            await fetch('/api/bookings', { method: 'PATCH', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ id: b.id, action: 'accept' }) });
-                            // reload
-                            const br = await fetch(`/api/bookings?month=${month}`, );
+                            const r = await fetch('/api/bookings', { method: 'PATCH', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ id: b.id, action: 'accept' }) });
+                            if (!r.ok) { showBanner("error", "Failed to accept booking."); return; }
+                            const br = await fetch(`/api/bookings?month=${month}`);
                             if (br.ok) { const bj = await br.json(); setBookings(bj.bookings); }
+                            showBanner("success", "Booking accepted and slot blocked.");
                           }}
                           className="px-2 py-1 text-xs bg-emerald-50 hover:bg-emerald-100 text-emerald-700 rounded"
                         >
                           Accept & Block Slot
                         </button>
                         <button
+                          type="button"
                           onClick={async () => {
-                            await fetch('/api/bookings', { method: 'PATCH', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ id: b.id, action: 'cancel' }) });
-                            const br = await fetch(`/api/bookings?month=${month}`, );
+                            const r = await fetch('/api/bookings', { method: 'PATCH', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ id: b.id, action: 'cancel' }) });
+                            if (!r.ok) { showBanner("error", "Failed to cancel booking."); return; }
+                            const br = await fetch(`/api/bookings?month=${month}`);
                             if (br.ok) { const bj = await br.json(); setBookings(bj.bookings); }
+                            showBanner("success", "Booking cancelled and slot reopened.");
                           }}
                           className="px-2 py-1 text-xs bg-red-50 hover:bg-red-100 text-red-700 rounded"
                         >
@@ -317,31 +383,61 @@ export default function AdminPage() {
               <h3 className="font-semibold text-[#4a4037] mb-3">Quick Actions</h3>
               <div className="space-y-2">
                 <button
+                  type="button"
                   onClick={() => {
+                    const DEFAULT_SLOTS = [
+                      "06:00","07:00","08:00","09:00","10:00","11:00","12:00",
+                      "13:00","14:00","15:00","16:00","17:00","18:00","19:00",
+                    ];
+                    // Operate on the currently viewed month, not today's month.
+                    const year = currentMonth.getFullYear();
+                    const monthIdx = currentMonth.getMonth();
+                    const lastDay = new Date(year, monthIdx + 1, 0).getDate();
                     const today = new Date();
-                    const endOfMonth = new Date(today.getFullYear(), today.getMonth() + 1, 0);
-                    const newDates = [];
-                    const newSlots: Record<string, string[]> = {};
-                    
-                    for (let d = new Date(today); d <= endOfMonth; d.setDate(d.getDate() + 1)) {
-                      const dayOfWeek = d.getDay();
-                      if (dayOfWeek !== 0) { // Skip Sundays
-                        const dateStr = d.toISOString().slice(0, 10);
-                        newDates.push(dateStr);
-                        newSlots[dateStr] = ["06:00","07:00","08:00","09:00","10:00","11:00","12:00","13:00","14:00","15:00","16:00","17:00","18:00","19:00"];
+                    const todayKey = toLocalDateString(today);
+                    // Start from the 1st of the viewed month unless it's the current
+                    // month — then start from today so we don't mark past dates.
+                    const startDay =
+                      year === today.getFullYear() && monthIdx === today.getMonth()
+                        ? today.getDate()
+                        : 1;
+
+                    const mergedDates = new Set(dates);
+                    const mergedSlots = { ...slotsByDate };
+                    let added = 0;
+                    for (let day = startDay; day <= lastDay; day++) {
+                      const d = new Date(year, monthIdx, day);
+                      const key = toLocalDateString(d);
+                      if (key < todayKey) continue;
+                      if (!mergedDates.has(key)) {
+                        mergedDates.add(key);
+                        mergedSlots[key] = DEFAULT_SLOTS;
+                        added++;
                       }
+                      // If date already has custom slots, leave them untouched.
                     }
-                    
-                    setDates(newDates);
-                    setSlotsByDate({...slotsByDate, ...newSlots});
+                    setDates(Array.from(mergedDates).sort());
+                    setSlotsByDate(mergedSlots);
                     setHasUnsavedChanges(true);
+                    showBanner(
+                      "success",
+                      added === 0
+                        ? "Every remaining date this month is already filled."
+                        : `Filled ${added} date${added === 1 ? "" : "s"}. Click Save to apply.`,
+                    );
                   }}
                   className="w-full text-left px-3 py-2 text-sm bg-[#f5f2ed] hover:bg-[#d4b896] hover:text-white rounded transition-colors"
                 >
-                  Fill Rest of Month (Mon-Sat)
+                  Fill this month (all days)
                 </button>
                 <button
+                  type="button"
                   onClick={() => {
+                    if (dates.length === 0) return;
+                    const confirmed = window.confirm(
+                      `Clear all ${dates.length} selected date${dates.length === 1 ? "" : "s"} in this month? You'll still need to click Save for this to take effect.`,
+                    );
+                    if (!confirmed) return;
                     setDates([]);
                     setSlotsByDate({});
                     setHasUnsavedChanges(true);

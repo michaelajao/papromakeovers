@@ -51,7 +51,16 @@ async function handleBooking(req: NextRequest) {
     })
     .select("id")
     .single();
-  if (insert.error) return NextResponse.json({ error: insert.error.message }, { status: 500 });
+  if (insert.error) {
+    // Postgres unique_violation → another request booked this slot first.
+    if ((insert.error as { code?: string }).code === "23505") {
+      return NextResponse.json(
+        { error: "This time was just taken. Please pick another slot." },
+        { status: 409 },
+      );
+    }
+    return NextResponse.json({ error: insert.error.message }, { status: 500 });
+  }
 
   const newSlots = currentSlots.filter((t) => t !== body.time);
   const upd = await supabase.from("availability").update({ slots: newSlots }).eq("date", slotKey);

@@ -1,6 +1,7 @@
 import { FAQ_ITEMS } from "@/data/faq";
 
 export default function FAQSection() {
+  if (FAQ_ITEMS.length === 0) return null;
   return (
     <section id="faq" className="py-24 bg-white">
       <div className="max-w-[860px] mx-auto px-5">
