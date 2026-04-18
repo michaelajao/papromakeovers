@@ -5,12 +5,29 @@ import ServicesSection from "@/components/ServicesSection";
 import TestimonialsSection from "@/components/TestimonialsSection";
 import FAQSection from "@/components/FAQSection";
 import GalleryLightbox from "@/components/GalleryLightbox";
+import InstagramEmbeds from "@/components/InstagramEmbeds";
 import Image from "next/image";
 import path from "path";
 import { promises as fs } from "fs";
 import { getActiveServices, getFeaturedTestimonials } from "@/lib/services-data";
 
 type GalleryFile = { file: string; alt: string };
+
+// Files used elsewhere on the page (About portrait, social share image) —
+// keep them in /public/gallery/ so their URLs still resolve for OG/Twitter/
+// JSON-LD, but skip them in the public gallery grid so the same face doesn't
+// appear twice on one page.
+const GALLERY_EXCLUDE = new Set(["IMG_2177.PNG"]);
+
+// Instagram embeds that appear as extra tiles below the gallery image grid.
+const GALLERY_INSTAGRAM = [
+  "https://www.instagram.com/papromakeovers/reel/Cz1ZvEAIPV6/",
+  "https://www.instagram.com/papromakeovers/reel/DJW3GFlNGOI/",
+  "https://www.instagram.com/ukafricanweddingawards/p/DFDfRC1MLbY/",
+];
+
+// Single featured reel, rendered large + centered in its own section.
+const FEATURED_REEL = "https://www.instagram.com/papromakeovers/reel/DEx1qjNNwWt/";
 
 function toGalleryAlt(file: string): string {
   const base = file.replace(/\.[^.]+$/, "").replace(/[-_]/g, " ");
@@ -25,7 +42,7 @@ export default async function Home() {
   try {
     const entries = await fs.readdir(galleryDir);
     galleryFiles = entries
-      .filter((f) => /\.(jpg|jpeg|png|webp|gif)$/i.test(f))
+      .filter((f) => /\.(jpg|jpeg|png|webp|gif)$/i.test(f) && !GALLERY_EXCLUDE.has(f))
       .map((file) => ({ file, alt: toGalleryAlt(file) }));
   } catch {
     galleryFiles = [];
@@ -110,6 +127,14 @@ export default async function Home() {
 
             <GalleryLightbox files={galleryFiles} />
 
+            <div className="mt-16 text-center mb-8" data-reveal>
+              <div className="text-xs uppercase tracking-[0.3em] text-[#b49b82] mb-3">
+                More on Instagram
+              </div>
+              <div className="w-10 h-px bg-[#d4b896] mx-auto" aria-hidden="true" />
+            </div>
+            <InstagramEmbeds urls={GALLERY_INSTAGRAM} variant="grid" />
+
             <div className="mt-12 text-center">
               <a
                 href="https://www.instagram.com/papromakeovers/"
@@ -125,6 +150,13 @@ export default async function Home() {
             </div>
           </div>
         </section>
+
+        <InstagramEmbeds
+          urls={[FEATURED_REEL]}
+          variant="featured"
+          eyebrow="Featured reel"
+          title="A look we loved"
+        />
 
         <TestimonialsSection testimonials={testimonials} />
 
