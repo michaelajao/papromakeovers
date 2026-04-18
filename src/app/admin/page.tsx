@@ -4,10 +4,11 @@ import { useEffect, useRef, useState } from "react";
 import AdminCalendar from "@/components/AdminCalendar";
 import TimeSlotManager from "@/components/TimeSlotManager";
 import ServicesManager from "@/components/admin/ServicesManager";
+import TestimonialsManager from "@/components/admin/TestimonialsManager";
 import { createClient } from "@/utils/supabase/client";
 import { toLocalDateString, toLocalMonthString } from "@/lib/date";
 
-type AdminTab = "availability" | "services";
+type AdminTab = "availability" | "services" | "reviews";
 
 type Payload = { month: string; dates: string[]; slotsByDate: Record<string, string[]> };
 
@@ -244,6 +245,7 @@ export default function AdminPage() {
           {([
             { id: "availability", label: "Availability & Bookings" },
             { id: "services", label: "Services & Pricing" },
+            { id: "reviews", label: "Reviews" },
           ] as { id: AdminTab; label: string }[]).map((t) => (
             <button
               key={t.id}
@@ -261,6 +263,8 @@ export default function AdminPage() {
         </div>
 
         {tab === "services" && <ServicesManager />}
+
+        {tab === "reviews" && <TestimonialsManager />}
 
         {tab === "availability" && (
         <>
