@@ -61,6 +61,81 @@ function UndoIcon() {
     </svg>
   );
 }
+function LockIcon() {
+  return (
+    <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+    </svg>
+  );
+}
+
+function SlugField({
+  row,
+  error,
+  isUnlocked,
+  saving,
+  onChange,
+  onUnlock,
+}: {
+  row: DraftService;
+  error?: string;
+  isUnlocked: boolean;
+  saving: boolean;
+  onChange: (slug: string) => void;
+  onUnlock: () => void;
+}) {
+  const editable = row._new || isUnlocked;
+  const urlPreview = row.slug ? `/?service=${row.slug}#booking` : "";
+
+  if (!editable) {
+    // Existing service, slug locked — show as code with a Change button
+    return (
+      <div className="space-y-1">
+        <div className="flex items-center gap-2">
+          <code className="flex-1 px-2 py-1.5 rounded bg-[#faf8f5] border border-[#f5f2ed] font-mono text-xs text-[#5c5048] truncate">
+            {row.slug || "—"}
+          </code>
+          <button
+            type="button"
+            onClick={onUnlock}
+            disabled={saving}
+            className="inline-flex items-center gap-1 text-[11px] text-[#8b7355] hover:text-[#7a2e3f] px-2 py-1 rounded border border-[#e5ddd1] hover:border-[#7a2e3f] transition-colors"
+            title="Unlock to change (warning: breaks existing links)"
+          >
+            <LockIcon />
+            Change
+          </button>
+        </div>
+        {urlPreview && (
+          <p className="text-[10px] text-[#8b7355] font-mono truncate">{urlPreview}</p>
+        )}
+      </div>
+    );
+  }
+
+  return (
+    <div className="space-y-1">
+      <input
+        value={row.slug}
+        disabled={saving}
+        onChange={(e) => onChange(slugify(e.target.value))}
+        className={`${FIELD_CLS} font-mono text-xs ${error ? FIELD_ERR : ""}`}
+        placeholder="service-slug"
+        aria-invalid={error ? "true" : "false"}
+        aria-label="Service slug"
+      />
+      {error && <p className="text-xs text-red-600">{error}</p>}
+      {!error && urlPreview && (
+        <p className="text-[10px] text-[#8b7355] font-mono truncate">{urlPreview}</p>
+      )}
+      {!row._new && isUnlocked && (
+        <p className="text-[11px] text-amber-700 bg-amber-50 border border-amber-200 rounded px-2 py-1">
+          ⚠ Changing this breaks any customer links to the old slug and booking-form deep links.
+        </p>
+      )}
+    </div>
+  );
+}
 
 const FIELD_CLS =
   "w-full px-2 py-1.5 rounded border border-[#f5f2ed] focus:border-[#7a2e3f] focus:outline-none focus:ring-1 focus:ring-[#7a2e3f]/20 disabled:bg-[#faf8f5] disabled:opacity-70";
@@ -73,6 +148,11 @@ export default function ServicesManager() {
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
   const [rowErrors, setRowErrors] = useState<RowErrors>({});
+  // IDs whose slug has been explicitly unlocked for editing. Existing services
+  // default to locked so admins don't break URLs by accident.
+  const [unlockedSlugs, setUnlockedSlugs] = useState<Set<number>>(new Set());
+  // IDs where the admin has manually edited the slug — stops the title→slug auto-sync.
+  const [manuallyEditedSlugs, setManuallyEditedSlugs] = useState<Set<number>>(new Set());
   // Snapshot of last-loaded rows keyed by id — used for the Revert button.
   const originalById = useRef<Map<number, ServiceRow>>(new Map());
 
@@ -86,6 +166,8 @@ export default function ServicesManager() {
       originalById.current = new Map(sorted.map((s) => [s.id, { ...s }]));
       setRows(sorted.map((s) => ({ ...s })));
       setRowErrors({});
+      setUnlockedSlugs(new Set());
+      setManuallyEditedSlugs(new Set());
       setError(null);
     } catch (e) {
       setError((e as Error).message);
@@ -146,6 +228,45 @@ export default function ServicesManager() {
       const { [id]: _dropped, ...rest } = prev;
       void _dropped;
       return rest;
+    });
+    // Relock the slug when reverting.
+    setUnlockedSlugs((prev) => {
+      if (!prev.has(id)) return prev;
+      const next = new Set(prev);
+      next.delete(id);
+      return next;
+    });
+    setManuallyEditedSlugs((prev) => {
+      if (!prev.has(id)) return prev;
+      const next = new Set(prev);
+      next.delete(id);
+      return next;
+    });
+  }
+
+  function unlockSlug(id: number) {
+    setUnlockedSlugs((prev) => {
+      const next = new Set(prev);
+      next.add(id);
+      return next;
+    });
+  }
+
+  function handleSlugChange(id: number, slug: string) {
+    updateRow(id, { slug });
+    setManuallyEditedSlugs((prev) => {
+      if (prev.has(id)) return prev;
+      const next = new Set(prev);
+      next.add(id);
+      return next;
+    });
+  }
+
+  function handleTitleChange(row: DraftService, title: string) {
+    const shouldAutoSync = row._new && !manuallyEditedSlugs.has(row.id);
+    updateRow(row.id, {
+      title,
+      ...(shouldAutoSync ? { slug: slugify(title) } : {}),
     });
   }
 
@@ -398,13 +519,7 @@ export default function ServicesManager() {
                       <input
                         value={row.title}
                         disabled={saving}
-                        onChange={(e) => {
-                          const title = e.target.value;
-                          updateRow(row.id, {
-                            title,
-                            ...(row._new && !row.slug ? { slug: slugify(title) } : {}),
-                          });
-                        }}
+                        onChange={(e) => handleTitleChange(row, e.target.value)}
                         className={`${FIELD_CLS} text-base font-medium ${errs.title ? FIELD_ERR : ""}`}
                         placeholder="Service title"
                         aria-invalid={errs.title ? "true" : "false"}
@@ -469,16 +584,17 @@ export default function ServicesManager() {
                   </div>
 
                   <div>
-                    <label className="block text-[11px] uppercase tracking-wider text-[#6b5d4f] mb-1">Slug</label>
-                    <input
-                      value={row.slug}
-                      disabled={saving}
-                      onChange={(e) => updateRow(row.id, { slug: slugify(e.target.value) })}
-                      className={`${FIELD_CLS} font-mono text-xs ${errs.slug ? FIELD_ERR : ""}`}
-                      placeholder="service-slug"
-                      aria-invalid={errs.slug ? "true" : "false"}
+                    <label className="block text-[11px] uppercase tracking-wider text-[#6b5d4f] mb-1">
+                      Slug <span className="normal-case tracking-normal text-[#8b7355]">(URL identifier)</span>
+                    </label>
+                    <SlugField
+                      row={row}
+                      error={errs.slug}
+                      isUnlocked={unlockedSlugs.has(row.id)}
+                      saving={saving}
+                      onChange={(slug) => handleSlugChange(row.id, slug)}
+                      onUnlock={() => unlockSlug(row.id)}
                     />
-                    {errs.slug && <p className="mt-1 text-xs text-red-600">{errs.slug}</p>}
                   </div>
 
                   <div>
@@ -579,29 +695,22 @@ export default function ServicesManager() {
                           <input
                             value={row.title}
                             disabled={saving}
-                            onChange={(e) => {
-                              const title = e.target.value;
-                              updateRow(row.id, {
-                                title,
-                                ...(row._new && !row.slug ? { slug: slugify(title) } : {}),
-                              });
-                            }}
+                            onChange={(e) => handleTitleChange(row, e.target.value)}
                             className={`${FIELD_CLS} ${errs.title ? FIELD_ERR : ""}`}
                             placeholder="Service title"
                             aria-invalid={errs.title ? "true" : "false"}
                           />
                           {errs.title && <p className="mt-1 text-xs text-red-600">{errs.title}</p>}
                         </td>
-                        <td className="px-3 py-2">
-                          <input
-                            value={row.slug}
-                            disabled={saving}
-                            onChange={(e) => updateRow(row.id, { slug: slugify(e.target.value) })}
-                            className={`${FIELD_CLS} font-mono text-xs ${errs.slug ? FIELD_ERR : ""}`}
-                            placeholder="service-slug"
-                            aria-invalid={errs.slug ? "true" : "false"}
+                        <td className="px-3 py-2 max-w-[220px]">
+                          <SlugField
+                            row={row}
+                            error={errs.slug}
+                            isUnlocked={unlockedSlugs.has(row.id)}
+                            saving={saving}
+                            onChange={(slug) => handleSlugChange(row.id, slug)}
+                            onUnlock={() => unlockSlug(row.id)}
                           />
-                          {errs.slug && <p className="mt-1 text-xs text-red-600">{errs.slug}</p>}
                         </td>
                         <td className="px-3 py-2">
                           <select
