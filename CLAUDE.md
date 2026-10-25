@@ -39,14 +39,16 @@ This is a Next.js 15 App Router application for PaproMakeovers, a makeup artist 
 
 - **Frontend**: React 19 with TypeScript, Tailwind CSS v4, App Router
 - **Backend**: Next.js API routes for booking and availability management  
-- **Database**: Supabase with PostgreSQL (tables: `availability`, `bookings`)
-- **External Services**: EmailJS for notifications, Zoho for invoicing
+- **Database**: Supabase with PostgreSQL (tables: `availability`, `bookings`, `services`, `testimonials`, `admin_users`)
+- **External Services**: Resend for booking emails
 
 ### Key Components
 - `src/app/page.tsx` - Main landing page with services showcase
 - `src/app/admin/page.tsx` - Admin interface for availability management
 - `src/components/BookingForm.tsx` - Client booking form
 - `src/components/Calendar.tsx` - Availability calendar display
+- `src/lib/service-images.ts` - Cover photo per service card, keyed by service slug
+- Portfolio photos: every image in `public/gallery/` is shown automatically; card/hero-only photos live in `public/images/work/`
 
 ### API Architecture
 - `POST /api/booking` - Process new bookings with conflict prevention
@@ -56,15 +58,14 @@ The booking flow uses optimistic concurrency control:
 1. Check slot availability
 2. Insert booking record
 3. Remove time slot from availability
-4. Send email notification and create draft invoice
+4. Send email notification
 
 ### Database Schema
 - `availability` table: date → slots array mapping
 - `bookings` table: customer details with unique constraint on (date, time)
 
 ### External Integrations
-- **EmailJS**: Booking confirmations via browser API
-- **Zoho Invoice**: Draft invoice creation via REST API
+- **Resend**: Booking confirmation emails (`src/lib/email.ts`, templates in `src/lib/email-templates.ts`)
 - **Supabase**: Database with service role for admin operations
 
 ## Environment Variables
@@ -74,12 +75,6 @@ The booking flow uses optimistic concurrency control:
 - `NEXT_PUBLIC_SUPABASE_URL` / `NEXT_PUBLIC_SUPABASE_ANON_KEY` - Database access
 - `SUPABASE_SERVICE_ROLE_KEY` - Server-side database operations
 - `RESEND_API_KEY` - Email delivery via Resend
-
-### Optional Services  
-- `ZOHO_ORG_ID` / `ZOHO_ACCESS_TOKEN` - Invoice generation
-  - Sign up at https://www.zoho.com/invoice/
-  - Create OAuth app for access token
-  - Get Organization ID from account settings
 
 ## Development Notes
 
