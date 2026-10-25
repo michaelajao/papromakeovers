@@ -49,7 +49,7 @@ export default async function Home() {
       <main id="main">
         <section
           id="home"
-          className="h-[100svh] relative flex items-center justify-center text-center px-6"
+          className="min-h-[100svh] relative flex items-center pt-24 pb-16 lg:pt-24 lg:pb-12 px-6 overflow-hidden"
           style={{
             backgroundImage:
               "linear-gradient(135deg, rgba(205, 180, 155, 0.15), rgba(180, 155, 130, 0.1)), url('data:image/svg+xml,<svg xmlns=\\'http://www.w3.org/2000/svg\\' viewBox=\\'0 0 1000 600\\'><rect fill=\\'%23faf8f5\\' width=\\'1000\\' height=\\'600\\'/><circle fill=\\'%23d4b896\\' opacity=\\'0.2\\' cx=\\'200\\' cy=\\'150\\' r=\\'100\\'/><circle fill=\\'%23b49b82\\' opacity=\\'0.15\\' cx=\\'800\\' cy=\\'400\\' r=\\'150\\'/><path fill=\\'%23d4b896\\' opacity=\\'0.1\\' d=\\'M0,300 Q250,100 500,300 T1000,300 L1000,600 L0,600 Z\\'/></svg>')",
@@ -57,18 +57,51 @@ export default async function Home() {
             backgroundPosition: "center",
           }}
         >
-          <div className="max-w-[820px] animate-[fadeInUp_1s_ease]">
-            <div className="text-xs uppercase tracking-[0.35em] text-[#b49b82] mb-5">Coventry · Mobile across the UK</div>
-            <h1 className="font-serif text-5xl sm:text-7xl mb-5 bg-gradient-to-br from-[#b49b82] to-[#8b7355] bg-clip-text text-transparent leading-[1.05]">
-              Transform Your Beauty
-            </h1>
-            <p className="text-lg text-[#5c5048] mb-8 max-w-xl mx-auto">
-              Professional makeup artistry for every occasion. From bridal to special events,
-              we create stunning looks that make you feel confident and beautiful.
-            </p>
-            <div className="flex flex-wrap gap-4 justify-center">
-              <a href="#booking" className="rounded-full bg-[#7a2e3f] text-white font-semibold px-7 py-3.5 shadow-[0_10px_25px_rgba(122,46,63,0.35)] hover:bg-[#5c1f2c] hover:translate-y-[-2px] transition">Reserve Your Chair</a>
-              <a href="#services" className="rounded-full border-2 border-[#b49b82] text-[#8b7355] font-semibold px-6 py-3 hover:bg-[#b49b82] hover:text-white transition">Explore Services</a>
+          <div className="max-w-[1200px] w-full mx-auto grid lg:grid-cols-[1.1fr_1fr] gap-10 lg:gap-16 items-center">
+            <div className="text-center lg:text-left animate-[fadeInUp_1s_ease]">
+              <div className="text-xs uppercase tracking-[0.35em] text-[#b49b82] mb-5">Coventry · Mobile across the UK</div>
+              <h1 className="font-serif text-5xl sm:text-7xl mb-5 bg-gradient-to-br from-[#b49b82] to-[#8b7355] bg-clip-text text-transparent leading-[1.05]">
+                Transform Your Beauty
+              </h1>
+              <p className="text-lg text-[#5c5048] mb-8 max-w-xl mx-auto lg:mx-0">
+                Professional makeup artistry for every occasion. From bridal to special events,
+                we create stunning looks that make you feel confident and beautiful.
+              </p>
+              <div className="flex flex-wrap gap-4 justify-center lg:justify-start">
+                <a href="#booking" className="rounded-full bg-[#7a2e3f] text-white font-semibold px-7 py-3.5 shadow-[0_10px_25px_rgba(122,46,63,0.35)] hover:bg-[#5c1f2c] hover:translate-y-[-2px] transition">Reserve Your Chair</a>
+                <a href="#services" className="rounded-full border-2 border-[#b49b82] text-[#8b7355] font-semibold px-6 py-3 hover:bg-[#b49b82] hover:text-white transition">Explore Services</a>
+              </div>
+              <div className="mt-10 hidden sm:flex items-center justify-center lg:justify-start gap-6 text-sm text-[#6b5d4f]">
+                <span><span className="font-serif text-2xl text-[#7a2e3f]">8+</span> years</span>
+                <span className="w-px h-6 bg-[#d4b896]" aria-hidden="true" />
+                <span>Bridal · Gele · Glam</span>
+              </div>
+            </div>
+
+            {/* Arch-framed portfolio shot with a smaller overlapping look. */}
+            <div className="relative mx-auto w-full max-w-[250px] sm:max-w-[400px] animate-[fadeInUp_1.2s_ease]">
+              <div className="relative aspect-[4/5] rounded-t-full overflow-hidden border-4 border-white shadow-[0_30px_60px_rgba(122,46,63,0.18)]">
+                <Image
+                  src="/gallery/IMG_2164.PNG"
+                  alt="Bride with veil and soft glam bridal makeup by Papromakeovers"
+                  fill
+                  priority
+                  sizes="(min-width: 640px) 400px, 250px"
+                  className="object-cover object-[50%_25%]"
+                />
+              </div>
+              <div className="absolute -bottom-6 -left-4 sm:-left-10 w-28 h-28 sm:w-36 sm:h-36 rounded-full overflow-hidden border-4 border-white shadow-xl">
+                <Image
+                  src="/images/work/gele-orange.jpg"
+                  alt="Orange gele and glam makeup by Papromakeovers"
+                  fill
+                  sizes="144px"
+                  className="object-cover object-[50%_25%]"
+                />
+              </div>
+              <div className="absolute top-8 -right-2 sm:-right-6 bg-white/95 backdrop-blur px-4 py-2 rounded-full shadow-lg border border-[#e5ddd1] text-xs font-semibold text-[#4a4037] tracking-wide">
+                Bridal specialist
+              </div>
             </div>
           </div>
         </section>

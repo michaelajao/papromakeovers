@@ -1,5 +1,6 @@
 import ServiceCard from "@/components/ServiceCard";
 import { groupByCategory } from "@/lib/services-data";
+import { SERVICE_IMAGES } from "@/lib/service-images";
 import type { ServiceRow } from "@/types/service";
 
 const CATEGORY_ORDER = ["Signature", "Group", "Bridal", "Education"];
@@ -61,6 +62,7 @@ export default function ServicesSection({
                     description={s.description ?? undefined}
                     features={s.features}
                     priceFrom={s.price_from}
+                    image={SERVICE_IMAGES[s.slug]}
                   />
                 ))}
               </div>
