@@ -23,7 +23,7 @@ The app uses Resend for email delivery with custom domain setup:
 
 - **Domain**: papromakeovers.com (configured with SPF, DKIM, DMARC)
 - **From Address**: bookings@papromakeovers.com  
-- **Reply-To**: papromakeroversstudios@gmail.com
+- **Reply-To**: papromakeoversstudio@gmail.com
 - **Features**: HTML + plain text emails, delivery tracking
 
 **DNS Records Required:**
@@ -70,7 +70,7 @@ The booking flow uses optimistic concurrency control:
 ## Environment Variables
 
 ### Required for Full Functionality
-- `ADMIN_PASSCODE` - Simple passcode for admin access
+- (Admin access uses Supabase Auth email/password plus a row in the `admin_users` table — see `src/lib/admin-auth.ts`)
 - `NEXT_PUBLIC_SUPABASE_URL` / `NEXT_PUBLIC_SUPABASE_ANON_KEY` - Database access
 - `SUPABASE_SERVICE_ROLE_KEY` - Server-side database operations
 - `RESEND_API_KEY` - Email delivery via Resend
@@ -90,7 +90,7 @@ Run `supabase.sql` to create required tables. The schema includes:
 - Optional RLS policies for security
 
 ### Admin Interface
-Access `/admin` with the `ADMIN_PASSCODE` to manage availability. Uses simple passcode protection that should be replaced with proper authentication for production.
+Sign in at `/admin/login` with a Supabase Auth account listed in `admin_users`. Availability is saved per month, so each new month must be opened here before customers can book it.
 
 ### Color Scheme
 The site uses a warm, beauty-focused palette:

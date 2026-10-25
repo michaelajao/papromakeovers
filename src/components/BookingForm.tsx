@@ -109,6 +109,13 @@ export default function BookingForm() {
     return availability.slotsByDate[key] ?? [];
   }, [availability, selectedDate]);
 
+  // Null until availability loads, so we don't flash "no dates" on first render.
+  const hasOpenDates = useMemo(() => {
+    if (!availability) return null;
+    const todayIso = toLocalDateString(new Date());
+    return availability.dates.some((d) => d.slice(0, 10) >= todayIso);
+  }, [availability]);
+
   const groupedServices = useMemo(() => {
     const byCat: Record<string, ServiceRow[]> = {};
     for (const s of services) {
@@ -131,7 +138,14 @@ export default function BookingForm() {
 
   async function submit(e: React.FormEvent) {
     e.preventDefault();
-    if (!service || !name || !email || !phone || !selectedDate || !selectedTime) return;
+    if (!selectedDate || !selectedTime) {
+      setFeedback({
+        kind: "error",
+        text: !selectedDate ? "Please choose a date for your appointment." : "Please choose a time slot.",
+      });
+      return;
+    }
+    if (!service || !name || !email || !phone) return;
     if (submittingRef.current) return;
     submittingRef.current = true;
     setSubmitting(true);
@@ -294,6 +308,16 @@ export default function BookingForm() {
               onChangeMonth={changeMonth}
               onGoToToday={() => setCurrentMonth(new Date())}
             />
+            {hasOpenDates === false && (
+              <p className="mt-3 text-sm text-[#5c5048]" role="status">
+                No dates are open in {currentMonth.toLocaleDateString("en-GB", { month: "long", year: "numeric" })}. Try
+                the next month, or email{" "}
+                <a href="mailto:papromakeoversstudio@gmail.com" className="text-[#7a2e3f] underline">
+                  papromakeoversstudio@gmail.com
+                </a>{" "}
+                to arrange a date.
+              </p>
+            )}
           </div>
         )}
       </div>
@@ -302,7 +326,9 @@ export default function BookingForm() {
         <label className="block font-semibold mb-2">Available Time Slots</label>
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-2" role="group" aria-label="Available time slots">
           {timeSlots.length === 0 && (
-            <div className="col-span-4 text-sm text-[#8b7355]">Select a date to see available times.</div>
+            <div className="col-span-4 text-sm text-[#8b7355]">
+              {selectedDate ? "No times are left on this date. Please pick another day." : "Select a date to see available times."}
+            </div>
           )}
           {timeSlots.map((t) => {
             const isSelected = selectedTime === t;

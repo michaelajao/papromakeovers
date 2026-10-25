@@ -132,7 +132,8 @@ export default function Calendar({
         {allCells.map((d) => {
           const iso = toLocalDateString(d);
           const inMonth = isSameMonth(d, month);
-          const isAvailable = inMonth && (availableSet.size === 0 || availableSet.has(iso));
+          // Only dates the admin has opened, and never in the past.
+          const isAvailable = inMonth && iso >= todayIso && availableSet.has(iso);
           const selected = selectedDate && isSameDay(selectedDate, d);
           const isToday = iso === todayIso;
 
